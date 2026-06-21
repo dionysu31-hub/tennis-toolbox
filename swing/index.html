@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>AI 挥拍诊断 · 你的动作差在哪？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --ink:#14141A; --ink-70:rgba(20,20,26,.70); --ink-55:rgba(20,20,26,.55); --ink-38:rgba(20,20,26,.38);
+  --ink-12:rgba(20,20,26,.12); --ink-08:rgba(20,20,26,.08);
+  --bone:#F4F1EA; --paper:#FBF9F4; --accent:#D14A24; --accent-soft:rgba(209,74,36,.10);
+  --grass:#C6FF00; --grass-deep:#9FD000; --ok:#1E8A5E; --ok-soft:rgba(30,138,94,.14);
+  --font-display:"Instrument Serif","Noto Serif SC",Georgia,serif;
+  --font-ui:"Geist","Noto Sans SC",-apple-system,system-ui,sans-serif;
+  --font-mono:"Geist Mono","Noto Sans SC",ui-monospace,monospace;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(20,20,26,.04),0 8px 24px rgba(20,20,26,.07);
+  --shadow-card:0 2px 4px rgba(20,20,26,.05),0 18px 50px rgba(20,20,26,.13);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bone);color:var(--ink);font-family:var(--font-ui);line-height:1.55;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center;background-image:radial-gradient(var(--ink-08) 1px,transparent 1px);background-size:22px 22px}
+.wrap{width:100%;max-width:460px;min-height:100vh;padding:28px 22px 40px;display:flex;flex-direction:column}
+.view{display:none;animation:lift .5s var(--ease) both}
+.view.on{display:flex;flex-direction:column;flex:1}
+@keyframes lift{from{opacity:0;transform:translateY(14px) scale(.99);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+.brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+.brandline::before{content:"";width:14px;height:14px;background:var(--grass);border-radius:3px;box-shadow:0 0 0 1px var(--ink-12) inset}
+.intro-top{flex:1;display:flex;flex-direction:column;justify-content:center}
+.hero{font-family:var(--font-display);font-weight:400;font-size:56px;line-height:1;letter-spacing:-.015em;margin:18px 0 4px}
+.hero em{font-style:italic;color:var(--accent)}
+.hero .mark{display:inline-block;position:relative}
+.hero .mark::after{content:"";position:absolute;left:-2%;right:-2%;bottom:6px;height:13px;background:var(--grass);z-index:-1;opacity:.85;transform:rotate(-1.2deg)}
+.sub{font-size:16px;color:var(--ink-70);margin-top:14px;max-width:31ch}
+.tips{margin-top:20px;background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;padding:15px 16px;font-size:13px;color:var(--ink-70);line-height:1.6;box-shadow:var(--shadow)}
+.tips b{color:var(--ink)}
+.btn{appearance:none;border:none;cursor:pointer;font-family:var(--font-ui);font-weight:500;border-radius:var(--radius-btn);transition:transform .15s var(--ease),box-shadow .2s var(--ease),background .2s}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--ink);color:var(--paper);font-size:17px;padding:17px 22px;width:100%;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-primary .dot{width:9px;height:9px;border-radius:50%;background:var(--grass)}
+.btn-text{background:none;border:none;color:var(--ink-55);font-family:var(--font-ui);font-size:14px;cursor:pointer;padding:13px;width:100%;text-decoration:underline;text-underline-offset:3px}
+.btn-text:hover{color:var(--ink)}
+.intro-foot{margin-top:10px;font-size:12px;color:var(--ink-38);text-align:center;line-height:1.5}
+/* analyzing */
+#v-load{align-items:center;justify-content:center;text-align:center}
+.spinner{width:54px;height:54px;border:3px solid var(--ink-12);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:22px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-t{font-family:var(--font-display);font-size:26px}
+.load-s{font-family:var(--font-mono);font-size:12px;color:var(--ink-55);margin-top:10px}
+/* result */
+.r-head{text-align:center;margin-bottom:18px}
+.r-head .brandline{justify-content:center}
+.r-head h2{font-family:var(--font-display);font-size:30px;margin-top:8px}
+.card-stage{display:flex;justify-content:center}
+.card{width:400px;background:var(--paper);border-radius:20px;overflow:hidden;position:relative;box-shadow:var(--shadow-card);border:1px solid var(--ink-08)}
+.card-top{height:7px;background:linear-gradient(90deg,var(--accent) 0 64%,var(--grass) 64% 100%)}
+.card-pad{padding:26px 28px 22px}
+.c-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;justify-content:space-between}
+.c-score{display:flex;align-items:flex-end;gap:14px;margin-top:12px}
+.c-big{font-family:var(--font-display);font-size:90px;line-height:.7;letter-spacing:-.02em}
+.c-big small{font-size:23px;color:var(--ink-38);font-family:var(--font-ui);font-weight:500}
+.c-gradewrap{padding-bottom:13px}
+.c-shot{font-family:var(--font-mono);font-size:11px;color:var(--ink-55);margin-bottom:3px}
+.c-grade{font-family:var(--font-display);font-style:italic;font-size:24px;color:var(--accent);line-height:1}
+.c-skel{display:flex;justify-content:center;margin:16px 0 6px;background:var(--bone);border-radius:14px;padding:6px 0;border:1px solid var(--ink-08)}
+.c-vs{font-family:var(--font-display);font-size:18.5px;line-height:1.36;margin:14px 2px 8px;color:var(--ink)}
+.c-vs::before{content:"“";color:var(--accent);font-size:24px;margin-right:1px}
+.c-diags{margin-top:8px}
+.dg{display:flex;gap:11px;padding:13px 0;border-top:1px solid var(--ink-08)}
+.dg .ic{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.dg.ok .ic{background:var(--ok-soft);color:var(--ok)}
+.dg.no .ic{background:var(--accent-soft);color:var(--accent)}
+.dg .tx h4{font-size:14.5px;font-weight:600;margin-bottom:2px}
+.dg .tx p{font-size:13px;color:var(--ink-70);line-height:1.5}
+.c-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:13px;border-top:1px solid var(--ink-08);font-family:var(--font-mono);font-size:10.5px;color:var(--ink-38)}
+.c-foot .badge{display:flex;align-items:center;gap:6px;color:var(--ink-55)}
+.c-foot .badge i{width:10px;height:10px;background:var(--grass);border-radius:2px;display:inline-block}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.btn-row{display:flex;gap:10px}
+.btn-ghost{flex:1;background:var(--paper);border:1px solid var(--ink-12);color:var(--ink);font-size:14.5px;padding:14px;box-shadow:var(--shadow)}
+.btn-ghost:hover{border-color:var(--ink-38)}
+.hint{margin-top:6px;font-size:12px;color:var(--ink-38);text-align:center;line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:14px;max-width:340px;font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-card);transition:opacity .3s,transform .3s var(--ease);z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast b{color:var(--grass)}
+@media(max-width:430px){.hero{font-size:48px}.card{width:100%}.c-big{font-size:78px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="view on" id="v-intro">
+    <div class="intro-top">
+      <div class="brandline">AI 挥拍诊断 · Swing AI</div>
+      <h1 class="hero">AI 帮你<br>看<span class="mark">挥拍</span>。</h1>
+      <p class="sub">上传一段挥拍视频，AI 拆解你的动作骨架，告诉你差在哪、怎么改。</p>
+      <div class="tips">📹 <b>怎么拍</b>：手机<b>横屏</b>、侧面对着你、拍清全身，正手或发球都行，一两拍就够。</div>
+    </div>
+    <input type="file" id="file" accept="video/*" style="display:none" onchange="onFile(event)">
+    <button class="btn btn-primary" onclick="document.getElementById('file').click()"><span class="dot"></span>上传挥拍视频</button>
+    <button class="btn-text" onclick="demo()">没视频？先看一份示例报告 →</button>
+    <div class="intro-foot">视频只在你手机本地分析，不上传服务器 · 上传分析为实验功能</div>
+  </section>
+
+  <section class="view" id="v-load">
+    <div class="spinner"></div>
+    <div class="load-t" id="load-t">正在拆解你的动作…</div>
+    <div class="load-s" id="load-s">加载 AI 模型</div>
+  </section>
+
+  <section class="view" id="v-result">
+    <div class="r-head">
+      <div class="brandline">诊断完成 · Report</div>
+      <h2>你的挥拍诊断报告</h2>
+    </div>
+    <div class="card-stage">
+      <div class="card" id="card">
+        <div class="card-top"></div>
+        <div class="card-pad">
+          <div class="c-eyebrow"><span id="c-shottag">AI 挥拍诊断 · 正手</span><span>2026</span></div>
+          <div class="c-score">
+            <div class="c-big" id="c-big">76<small>/100</small></div>
+            <div class="c-gradewrap">
+              <div class="c-shot">动作完成度</div>
+              <div class="c-grade" id="c-grade">B · 进阶有戏</div>
+            </div>
+          </div>
+          <div class="c-skel" id="c-skel"></div>
+          <p class="c-vs" id="c-vs">点评</p>
+          <div class="c-diags" id="c-diags"></div>
+          <div class="c-foot">
+            <span class="badge"><i></i>AI 挥拍诊断</span>
+            <span>@你的账号 · 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="download()"><span class="dot"></span>保存诊断卡 · 发小红书</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="document.getElementById('file').click()">换段视频</button>
+        <button class="btn btn-ghost" onclick="coach()">找教练改动作</button>
+      </div>
+      <div class="hint">把诊断卡发出来，配「AI 给我的正手挑了 3 个毛病」试试 👀</div>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- 示例数据 ---------------- */
+const SAMPLE = {
+  shot:"正手",
+  score:76, grade:"B · 进阶有戏",
+  joints:{ head:[150,46], neck:[148,86], shR:[172,90], shL:[126,88], elbowR:[208,118],
+           wristR:[242,102], racket:[266,86], hip:[146,182], kneeR:[174,250], kneeL:[120,248],
+           ankleR:[180,314], ankleL:[108,314] },
+  bones:[["head","neck"],["neck","shR"],["shR","elbowR"],["elbowR","wristR"],["wristR","racket"],
+         ["neck","shL"],["neck","hip"],["hip","kneeR"],["kneeR","ankleR"],["hip","kneeL"],["kneeL","ankleL"]],
+  bad:["elbowR"],
+  marks:[{at:[214,124],t:"肘 142°",bad:true},{at:[182,250],t:"膝 158°",bad:false}],
+  vs:"引拍已经有模有样，差的是击球点——同样一拍，高手在更高、更前的位置触球。",
+  diag:[
+    {ok:true, t:"转体充分、下盘稳", d:"膝盖弯到约 158°，重心压得住，发力有根。"},
+    {ok:false,t:"击球点偏低", d:"触球时手腕低于肩，借不到高度。试着在身体前上方、约肩高处击球。"},
+    {ok:false,t:"随挥收得早", d:"挥拍没过对侧肩。跟到对侧肩上方，球会更稳、更转。"},
+  ]
+};
+
+/* ---------------- 渲染 ---------------- */
+function skelSVG(d){
+  const J=d.joints, S=300, H=340;
+  let g='';
+  d.bones.forEach(([a,b])=>{ if(J[a]&&J[b]) g+='<line x1="'+J[a][0]+'" y1="'+J[a][1]+'" x2="'+J[b][0]+'" y2="'+J[b][1]+'" stroke="rgba(20,20,26,.30)" stroke-width="4" stroke-linecap="round"/>'; });
+  // racket head
+  if(J.racket) g+='<ellipse cx="'+J.racket[0]+'" cy="'+J.racket[1]+'" rx="13" ry="17" fill="none" stroke="#D14A24" stroke-width="3" transform="rotate(28 '+J.racket[0]+' '+J.racket[1]+')"/>';
+  // joints
+  Object.keys(J).forEach(k=>{ if(k==='racket')return; const bad=d.bad&&d.bad.includes(k);
+    g+='<circle cx="'+J[k][0]+'" cy="'+J[k][1]+'" r="'+(bad?7:4.5)+'" fill="'+(bad?'#D14A24':'#14141A')+'"/>';
+    if(bad) g+='<circle cx="'+J[k][0]+'" cy="'+J[k][1]+'" r="12" fill="none" stroke="#D14A24" stroke-width="1.5" opacity=".5"/>';
+  });
+  // angle marks
+  (d.marks||[]).forEach(m=>{ const c=m.bad?'#D14A24':'rgba(20,20,26,.5)';
+    g+='<text x="'+m.at[0]+'" y="'+m.at[1]+'" font-family="Geist Mono, monospace" font-size="12" font-weight="500" fill="'+c+'">'+m.t+'</text>'; });
+  return '<svg width="'+S+'" height="'+H+'" viewBox="0 0 '+S+' '+H+'">'+g+'</svg>';
+}
+function paint(d){
+  document.getElementById('c-shottag').textContent='AI 挥拍诊断 · '+d.shot;
+  document.getElementById('c-big').innerHTML=d.score+'<small>/100</small>';
+  document.getElementById('c-grade').textContent=d.grade;
+  document.getElementById('c-skel').innerHTML=skelSVG(d);
+  document.getElementById('c-vs').textContent=d.vs;
+  document.getElementById('c-diags').innerHTML=d.diag.map(x=>
+    '<div class="dg '+(x.ok?'ok':'no')+'"><div class="ic">'+(x.ok?'✓':'!')+'</div><div class="tx"><h4>'+x.t+'</h4><p>'+x.d+'</p></div></div>').join('');
+  show('result');
+}
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
+function demo(){ show('load'); fakeSteps(()=>paint(SAMPLE)); }
+function fakeSteps(done){
+  const steps=['加载 AI 模型…','逐帧追踪你的骨架…','定位击球关键帧…','计算关节角度…','生成诊断…'];
+  let i=0; const s=document.getElementById('load-s');
+  const t=setInterval(()=>{ s.textContent=steps[i]; i++; if(i>=steps.length){clearInterval(t); setTimeout(done,500);} },520);
+}
+
+/* ---------------- 真实视频分析（实验性，纯前端 MediaPipe） ---------------- */
+function ang(a,b,c){const ab=[a[0]-b[0],a[1]-b[1]],cb=[c[0]-b[0],c[1]-b[1]];
+  const dot=ab[0]*cb[0]+ab[1]*cb[1], m=Math.hypot(...ab)*Math.hypot(...cb)||1;
+  return Math.acos(Math.max(-1,Math.min(1,dot/m)))*180/Math.PI;}
+async function onFile(e){
+  const file=e.target.files&&e.target.files[0]; if(!file)return;
+  show('load'); const s=document.getElementById('load-s'); s.textContent='加载 AI 模型…';
+  try{
+    const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/vision_bundle.mjs');
+    const {PoseLandmarker, FilesetResolver}=vision;
+    const fileset=await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/wasm');
+    const pl=await PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'},runningMode:'VIDEO',numPoses:1});
+    s.textContent='逐帧追踪你的骨架…';
+    const v=document.createElement('video'); v.src=URL.createObjectURL(file); v.muted=true; v.playsInline=true;
+    await new Promise(r=>{v.onloadeddata=r;});
+    const dur=Math.min(v.duration||2, 4), N=24; let best=null;
+    for(let i=0;i<N;i++){ const t=dur*i/N; v.currentTime=t; await new Promise(r=>{v.onseeked=r;});
+      const res=pl.detectForVideo(v, performance.now());
+      if(res.landmarks&&res.landmarks[0]){ const L=res.landmarks[0];
+        const wristX=L[16].x; if(!best||wristX>best.wx) best={wx:wristX,L:L}; } }
+    if(!best) throw new Error('no pose');
+    s.textContent='计算关节角度…';
+    const W=300,H=340, P=k=>[best.L[k].x*W, best.L[k].y*H];
+    const J={head:P(0),neck:[(best.L[11].x+best.L[12].x)/2*W,(best.L[11].y+best.L[12].y)/2*H],
+      shR:P(12),shL:P(11),elbowR:P(14),wristR:P(16),racket:[best.L[16].x*W+22,best.L[16].y*H-16],
+      hip:[(best.L[23].x+best.L[24].x)/2*W,(best.L[23].y+best.L[24].y)/2*H],kneeR:P(26),kneeL:P(25),ankleR:P(28),ankleL:P(27)};
+    const elbow=ang(J.shR,J.elbowR,J.wristR), knee=ang(J.hip,J.kneeR,J.ankleR);
+    const contactLow=J.wristR[1]>J.shR[1];
+    const bad=[]; if(elbow<150)bad.push('elbowR');
+    let score=70; if(elbow>=150)score+=10; if(knee<170&&knee>140)score+=10; if(!contactLow)score+=8; score=Math.min(96,score);
+    const diag=[];
+    diag.push(knee<170&&knee>140?{ok:true,t:'下盘有屈膝，重心稳',d:'膝盖约 '+Math.round(knee)+'°，发力有根。'}:{ok:false,t:'屈膝不够',d:'腿伸太直('+Math.round(knee)+'°)，多沉一点更有力。'});
+    diag.push(contactLow?{ok:false,t:'击球点偏低',d:'触球时手腕低于肩，借不到高度。试着在肩高、身前击球。'}:{ok:true,t:'击球点合理',d:'触球点在肩附近，借得上力。'});
+    diag.push(elbow<150?{ok:false,t:'手臂没伸展',d:'击球肘角仅 '+Math.round(elbow)+'°，发力憋着。打开手臂、放松鞭打。'}:{ok:true,t:'手臂伸展到位',d:'肘角 '+Math.round(elbow)+'°，鞭打顺畅。'});
+    const data={shot:'挥拍',score,grade:score>=85?'A · 有内味了':score>=72?'B · 进阶有戏':'C · 打好基础',
+      joints:J,bones:SAMPLE.bones,bad,marks:[{at:[J.elbowR[0]+6,J.elbowR[1]+6],t:'肘 '+Math.round(elbow)+'°',bad:elbow<150},{at:[J.kneeR[0]+6,J.kneeR[1]+6],t:'膝 '+Math.round(knee)+'°',bad:false}],
+      vs:'AI 看了你这一拍——'+(bad.length?'毛病不致命，改了立刻不一样。':'底子不错，继续磨。'),diag};
+    pl.close(); paint(data);
+  }catch(err){ console.error(err); show('intro'); toast('真机分析没跑起来 😅 可能是网络/视频格式。先<b>看示例报告</b>感受下，或换段清晰横屏视频。'); }
+}
+
+/* ---------------- 动作 ---------------- */
+function coach(){toast('正在攒 📍 <b>按你诊断短板匹配教练/陪练</b>的功能在做。先把诊断卡发小红书，问一句「这动作谁能帮我改」？')}
+let tt;function toast(html){const e=document.getElementById('toast');e.innerHTML=html;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4600)}
+async function download(){
+  if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
+  try{const canvas=await html2canvas(document.getElementById('card'),{scale:3,backgroundColor:null,useCORS:true,logging:false});
+    const a=document.createElement('a');a.download='挥拍诊断卡.png';a.href=canvas.toDataURL('image/png');a.click();toast('已保存 ✅');
+  }catch(e){toast('保存失败，截图也行 😅');}
+}
+</script>
+</body>
+</html>

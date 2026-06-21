@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>网球段位自测 · 你是几段网球？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --ink:#14141A; --ink-70:rgba(20,20,26,.70); --ink-55:rgba(20,20,26,.55); --ink-38:rgba(20,20,26,.38);
+  --ink-12:rgba(20,20,26,.12); --ink-08:rgba(20,20,26,.08); --ink-04:rgba(20,20,26,.04);
+  --bone:#F4F1EA; --paper:#FBF9F4; --accent:#D14A24; --accent-soft:rgba(209,74,36,.10);
+  --grass:#C6FF00; --grass-deep:#9FD000;
+  --font-display:"Instrument Serif","Noto Serif SC",Georgia,serif;
+  --font-ui:"Geist","Noto Sans SC",-apple-system,system-ui,sans-serif;
+  --font-mono:"Geist Mono","Noto Sans SC",ui-monospace,monospace;
+  --radius-card:16px; --radius-btn:12px; --radius-chip:999px;
+  --shadow:0 1px 2px rgba(20,20,26,.04),0 8px 24px rgba(20,20,26,.07);
+  --shadow-card:0 2px 4px rgba(20,20,26,.05),0 18px 50px rgba(20,20,26,.13);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bone);color:var(--ink);font-family:var(--font-ui);line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  display:flex;justify-content:center;
+  background-image:radial-gradient(var(--ink-08) 1px,transparent 1px);background-size:22px 22px;
+}
+.wrap{width:100%;max-width:460px;min-height:100vh;padding:28px 22px 40px;display:flex;flex-direction:column}
+.view{display:none;animation:lift .5s var(--ease) both}
+.view.on{display:flex;flex-direction:column;flex:1}
+@keyframes lift{from{opacity:0;transform:translateY(14px) scale(.99);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+
+/* ---------- intro ---------- */
+.brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+.brandline::before{content:"";width:14px;height:14px;background:var(--grass);border-radius:3px;box-shadow:0 0 0 1px var(--ink-12) inset}
+.intro-top{flex:1;display:flex;flex-direction:column;justify-content:center}
+.hero{font-family:var(--font-display);font-weight:400;font-size:64px;line-height:.98;letter-spacing:-.015em;margin:18px 0 4px}
+.hero em{font-style:italic;color:var(--accent)}
+.hero .mark{display:inline-block;position:relative}
+.hero .mark::after{content:"";position:absolute;left:-2%;right:-2%;bottom:8px;height:14px;background:var(--grass);z-index:-1;opacity:.85;transform:rotate(-1.2deg)}
+.sub{font-size:16px;color:var(--ink-70);margin-top:14px;max-width:30ch}
+.meta-row{display:flex;gap:18px;margin-top:26px;font-family:var(--font-mono);font-size:12px;color:var(--ink-55)}
+.meta-row b{color:var(--ink);font-weight:500}
+.btn{
+  appearance:none;border:none;cursor:pointer;font-family:var(--font-ui);font-weight:500;
+  border-radius:var(--radius-btn);transition:transform .15s var(--ease),box-shadow .2s var(--ease),background .2s;
+}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--ink);color:var(--paper);font-size:17px;padding:17px 22px;width:100%;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-primary .dot{width:9px;height:9px;border-radius:50%;background:var(--grass)}
+.intro-foot{margin-top:14px;font-size:12.5px;color:var(--ink-38);text-align:center}
+
+/* ---------- quiz ---------- */
+.q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.q-count{font-family:var(--font-mono);font-size:13px;color:var(--ink-55)}
+.q-count b{color:var(--accent);font-size:15px}
+.bar{height:5px;background:var(--ink-08);border-radius:999px;overflow:hidden;margin-bottom:30px}
+.bar > i{display:block;height:100%;background:var(--ink);border-radius:999px;transition:width .45s var(--ease)}
+.q-dim{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.q-title{font-family:var(--font-display);font-size:34px;line-height:1.1;letter-spacing:-.01em;margin-bottom:26px}
+.opts{display:flex;flex-direction:column;gap:11px}
+.opt{
+  text-align:left;background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;
+  padding:16px 17px;font-size:15.5px;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:14px;
+  transition:border-color .18s,background .18s,transform .12s var(--ease);box-shadow:var(--shadow)
+}
+.opt:hover{border-color:var(--ink-38)}
+.opt .ix{font-family:var(--font-mono);font-size:12px;color:var(--ink-38);border:1px solid var(--ink-12);border-radius:7px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:none}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .ix{background:var(--accent);color:#fff;border-color:var(--accent)}
+.q-back{margin-top:24px;background:none;border:none;font-family:var(--font-mono);font-size:13px;color:var(--ink-38);cursor:pointer;align-self:flex-start}
+.q-back:hover{color:var(--ink)}
+
+/* ---------- result ---------- */
+.r-head{text-align:center;margin-bottom:18px}
+.r-head .brandline{justify-content:center}
+.r-head h2{font-family:var(--font-display);font-size:30px;margin-top:8px}
+.card-stage{display:flex;justify-content:center}
+.card{
+  width:400px;background:var(--paper);border-radius:20px;overflow:hidden;position:relative;
+  box-shadow:var(--shadow-card);border:1px solid var(--ink-08)
+}
+.card-top{height:7px;background:linear-gradient(90deg,var(--accent) 0 64%,var(--grass) 64% 100%)}
+.card-pad{padding:26px 28px 22px}
+.c-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;justify-content:space-between}
+.c-rank{display:flex;align-items:flex-end;gap:18px;margin-top:10px}
+.c-num{font-family:var(--font-display);font-size:108px;line-height:.7;letter-spacing:-.03em}
+.c-num .n{display:inline-block;padding:0 3px}
+.c-num.hot .n{background:linear-gradient(transparent 56%,rgba(198,255,0,.92) 56% 87%,transparent 87%)}
+.c-rank-side{padding-bottom:14px}
+.c-rank-tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--ink-38);margin-bottom:3px}
+.c-alias{font-family:var(--font-display);font-style:italic;font-size:27px;color:var(--accent);line-height:1.02}
+.c-ctn{font-family:var(--font-mono);font-size:11px;color:var(--ink-55);margin-top:7px}
+.c-ctn b{color:var(--ink)}
+.sc-track{position:relative;height:3px;background:var(--ink-12);border-radius:2px;margin:34px 9px 34px}
+.sc-fill{position:absolute;left:0;top:0;height:100%;background:var(--grass-deep);border-radius:2px}
+.sd{position:absolute;top:50%;width:8px;height:8px;border-radius:50%;background:var(--ink-12);transform:translate(-50%,-50%)}
+.sd.on{background:var(--grass-deep)}
+.sd.cur{width:16px;height:16px;background:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}
+.sdl{position:absolute;top:15px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:9px;color:var(--ink-38);white-space:nowrap}
+.sd.cur .sdl{color:var(--accent);font-weight:600;font-size:10.5px}
+.c-radar{display:flex;align-items:center;gap:4px;margin:8px 0 4px;justify-content:center}
+.c-quip{font-family:var(--font-display);font-size:20px;line-height:1.34;margin:10px 2px 18px;color:var(--ink)}
+.c-quip::before{content:"“";color:var(--accent);font-size:26px;margin-right:1px}
+.c-rows{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--ink-08);padding-top:16px}
+.c-row{display:flex;gap:12px;align-items:flex-start}
+.c-row .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-38);width:74px;flex:none;padding-top:2px}
+.c-row .v{font-size:13.5px;color:var(--ink-70);line-height:1.5}
+.c-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:13px;border-top:1px solid var(--ink-08);font-family:var(--font-mono);font-size:10.5px;color:var(--ink-38)}
+.c-foot .badge{display:flex;align-items:center;gap:6px;color:var(--ink-55)}
+.c-foot .badge i{width:10px;height:10px;background:var(--grass);border-radius:2px;display:inline-block}
+
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.btn-row{display:flex;gap:10px}
+.btn-ghost{flex:1;background:var(--paper);border:1px solid var(--ink-12);color:var(--ink);font-size:14.5px;padding:14px;box-shadow:var(--shadow)}
+.btn-ghost:hover{border-color:var(--ink-38)}
+.hint{margin-top:6px;font-size:12px;color:var(--ink-38);text-align:center;line-height:1.5}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+  background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:14px;max-width:330px;font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-card);transition:opacity .3s,transform .3s var(--ease);z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast b{color:var(--grass)}
+
+@media(max-width:430px){.hero{font-size:54px}.card{width:100%}.c-ntrp{font-size:66px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INTRO -->
+  <section class="view on" id="v-intro">
+    <div class="intro-top">
+      <div class="brandline">网球段位自测 · Tennis Level</div>
+      <h1 class="hero">你是<br><span class="mark">几段</span><em>网球</em>？</h1>
+      <p class="sub">8 道题，告诉你真实的 NTRP 段位、五维能力，以及——你到底能跟谁打。</p>
+      <div class="meta-row">
+        <span><b>8</b> 题</span>
+        <span><b>约 1</b> 分钟</span>
+        <span>出一张<b>可晒段位卡</b></span>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="start()"><span class="dot"></span>开始测我的段位</button>
+    <div class="intro-foot">基于 NTRP 业余标准 · 对照中国网协 CTN 参考口径</div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="v-quiz">
+    <div class="q-head">
+      <div class="q-count"><b id="q-cur">01</b> / <span id="q-tot">08</span></div>
+      <div class="brandline" style="font-size:10px">Tennis Level</div>
+    </div>
+    <div class="bar"><i id="q-bar" style="width:0%"></i></div>
+    <div class="q-dim" id="q-dim">发球</div>
+    <h2 class="q-title" id="q-title">题目</h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="q-back" id="q-back" onclick="prev()" style="display:none">← 上一题</button>
+  </section>
+
+  <!-- RESULT -->
+  <section class="view" id="v-result">
+    <div class="r-head">
+      <div class="brandline">测试完成 · Your Card</div>
+      <h2>这是你的网球段位卡</h2>
+    </div>
+    <div class="card-stage">
+      <div class="card" id="card">
+        <div class="card-top"></div>
+        <div class="card-pad">
+          <div class="c-eyebrow"><span>网球段位卡 · NTRP</span><span id="c-date">2026</span></div>
+          <div class="c-rank">
+            <div class="c-num" id="c-num"><span class="n">3.5</span></div>
+            <div class="c-rank-side">
+              <div class="c-rank-tag">NTRP</div>
+              <div class="c-alias" id="c-alias">中级选手</div>
+              <div class="c-ctn">CTN <b id="c-ctn">7–8</b> · 参考口径</div>
+            </div>
+          </div>
+          <div class="sc-track" id="c-scale"></div>
+          <div class="c-radar" id="c-radar"></div>
+          <p class="c-quip" id="c-quip">点评</p>
+          <div class="c-rows">
+            <div class="c-row"><div class="k">能打的对手</div><div class="v" id="c-vs">—</div></div>
+            <div class="c-row"><div class="k">下一段差什么</div><div class="v" id="c-next">—</div></div>
+          </div>
+          <div class="c-foot">
+            <span class="badge"><i></i>网球段位自测</span>
+            <span id="c-handle">@你的账号 · 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="download()"><span class="dot"></span>保存段位卡 · 发小红书</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="match()">找同段位的人</button>
+        <button class="btn btn-ghost" onclick="retake()">重新测一次</button>
+      </div>
+      <div class="hint">把卡发出去，配一句「有 <span id="hint-rank">3.5</span> 的吗，坐标××求约」试试 👀</div>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- 题库 ---------------- */
+const Q = [
+  {dim:"经验 · 球龄", t:"你打网球多久了？", opts:[
+    "还没真正开始，纯萌新","半年内，三天打鱼两天晒网","半年到两年，每周都打","两到五年，雷打不动","五年以上 / 进过队、打过赛"], key:"exp"},
+  {dim:"发球", t:"你的发球，是个什么水平？", opts:[
+    "还在研究怎么把球发进场","能发进，但十个里五个下网出界","一发基本进区，二发轻轻推过去","一发有速度，二发会搓上旋","发球能直接 ace 或抢攻得分"], key:"serve"},
+  {dim:"正手", t:"正手击球呢？", opts:[
+    "经常打空 / 打到拍框","能打过网，但飞哪儿算哪儿","方向和落点基本能控住","能拉上旋、能借力进攻","正手是我饭碗，跑动中也能爆"], key:"fore"},
+  {dim:"反手", t:"反手是软肋还是武器？", opts:[
+    "见到反手就绕到正手打","能挡一拍，质量全凭运气","双反/单反能稳定相持","反手能主动发力、能变线","切削、放短、进攻样样都行"], key:"back"},
+  {dim:"接发球", t:"对方发球过来，你能接住吗？", opts:[
+    "对方一发过来基本接不到","慢球能接，快球直接接飞","大部分发球能稳稳接回去","接发能控落点、找角度","接发就能直接反咬一口"], key:"ret"},
+  {dim:"底线相持", t:"底线对拉，能来回几拍？", opts:[
+    "来回撑不过三拍就崩","状态好能来回三到五拍","稳定能拉六到十拍","十拍以上还能控住节奏","拉锯里我还能主动加变化"], key:"rally"},
+  {dim:"网前", t:"上网截击这块？", opts:[
+    "基本不上网，底线钉子户","上了网，截击不是下网就是飞","能完成基本的截击","截击有落点，敢主动上网","双打封网、高压一条龙"], key:"net"},
+  {dim:"实战经验", t:"真刀真枪打比赛的经验？", opts:[
+    "只上过课，没跟人真打过","跟朋友约着玩，输赢无所谓","经常约球，开始在乎比分了","打过正经的业余比赛","业余比赛拿过名次"], key:"match"},
+];
+
+/* ---------------- 段位文案 ---------------- */
+const R = {
+  "1.5":{alias:"网球新生", ctn:"10",
+    quip:"欢迎上路。你和网球现在的关系，大概等于我和早睡——理论上成立。",
+    vs:"找教练喂球，或拉一个同样的萌新互相捡球（提前说好不许嫌弃）。",
+    next:"先别惦记德约的反手，把球稳定打过网就是巨大进步。"},
+  "2.0":{alias:"入门玩家", ctn:"9–10",
+    quip:"能把球打过网了。光这一条，你已经赢过一半「想学但从没下场」的人。",
+    vs:"2.0–2.5 的球友，慢节奏对拉，图个快乐。",
+    next:"练发球进区，正手先做到能控方向。"},
+  "2.5":{alias:"初级选手", ctn:"9",
+    quip:"你已经能打来回了。下次约球别再自称「菜鸟」——3.0 听了想找你单挑。",
+    vs:"2.5–3.0，能打出有来有回的回合。",
+    next:"反手别再躲，二发学着加上旋。"},
+  "3.0":{alias:"中级 · 初阶", ctn:"8",
+    quip:"业余圈人数最多、水分也最大的段位。很多自称 3.5 的，其实就站在你这。",
+    vs:"3.0–3.5，开始有点战术的对拉。",
+    next:"提升相持稳定性，网前敢上去。"},
+  "3.5":{alias:"中级选手", ctn:"7–8",
+    quip:"真能打球了。你嘴上说「随便打打」，对面新手是真会被你随便打哭。",
+    vs:"3.5–4.0，扛得住强度的对抗。",
+    next:"发球开始抢攻，反手从防守转进攻。"},
+  "4.0":{alias:"中高级", ctn:"7",
+    quip:"业余里的狠角色。你缺的从来不是球技，是约得到的同级别对手——这事我们正想解决。",
+    vs:"4.0 以上，碰到一个同级的得靠缘分（划重点）。",
+    next:"拼稳定性和体能，往比赛级别摸。"},
+  "4.5":{alias:"高级业余", ctn:"6–7",
+    quip:"都 4.5 了还来做自测，要么凡尔赛，要么真高手。我赌你是后者。",
+    vs:"同级稀缺，建议直接去打业余比赛找对手。",
+    next:"该去打 UTR 认证赛了——这张卡装不下你。"},
+};
+const RADAR_AXES = ["发球","正手","反手","网前","移动"];
+const LADDER = ["1.5","2.0","2.5","3.0","3.5","4.0","4.5"];
+function ladderHTML(ntrp){
+  const idx=LADDER.indexOf(ntrp), max=LADDER.length-1, fill=idx/max*100;
+  const dots=LADDER.map((l,i)=>{const on=i<=idx,cur=i===idx,left=i/max*100;
+    return '<div class="sd'+(on?' on':'')+(cur?' cur':'')+'" style="left:'+left+'%"><span class="sdl">'+l+'</span></div>';}).join('');
+  return '<div class="sc-fill" style="width:'+fill+'%"></div>'+dots;
+}
+
+/* ---------------- 状态 ---------------- */
+let cur=0; const ans=new Array(Q.length).fill(null);
+
+function start(){cur=0;ans.fill(null);show("quiz");renderQ()}
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
+const pad=n=>String(n).padStart(2,'0');
+
+function renderQ(){
+  const q=Q[cur];
+  document.getElementById('q-cur').textContent=pad(cur+1);
+  document.getElementById('q-tot').textContent=pad(Q.length);
+  document.getElementById('q-bar').style.width=((cur)/Q.length*100)+'%';
+  document.getElementById('q-dim').textContent=q.dim;
+  document.getElementById('q-title').textContent=q.t;
+  document.getElementById('q-back').style.display=cur>0?'block':'none';
+  const box=document.getElementById('q-opts');box.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(ans[cur]===i?' sel':'');
+    b.innerHTML='<span class="ix">'+String.fromCharCode(65+i)+'</span><span>'+o+'</span>';
+    b.onclick=()=>pick(i);
+    box.appendChild(b);
+  });
+}
+function pick(i){
+  ans[cur]=i;
+  document.querySelectorAll('#q-opts .opt').forEach((e,ix)=>e.classList.toggle('sel',ix===i));
+  document.getElementById('q-bar').style.width=((cur+1)/Q.length*100)+'%';
+  setTimeout(()=>{ if(cur<Q.length-1){cur++;renderQ();} else finish(); },260);
+}
+function prev(){if(cur>0){cur--;renderQ()}}
+
+/* ---------------- 计分 ---------------- */
+function band(total){ // 0..32
+  if(total<=4)return"1.5"; if(total<=9)return"2.0"; if(total<=14)return"2.5";
+  if(total<=19)return"3.0"; if(total<=24)return"3.5"; if(total<=28)return"4.0"; return"4.5";
+}
+function finish(){
+  const v={}; Q.forEach((q,i)=>v[q.key]=ans[i]??0);
+  const total=Object.values(v).reduce((a,b)=>a+b,0);
+  const ntrp=band(total);
+  const r=R[ntrp];
+  const radar=[v.serve, v.fore, v.back, v.net, (v.ret+v.rally)/2]; // 0..4
+  const numEl=document.getElementById('c-num');
+  numEl.innerHTML='<span class="n">'+ntrp+'</span>';
+  numEl.classList.toggle('hot', parseFloat(ntrp)>=4.0);
+  document.getElementById('c-alias').textContent=r.alias;
+  document.getElementById('c-ctn').textContent=r.ctn;
+  document.getElementById('c-scale').innerHTML=ladderHTML(ntrp);
+  document.getElementById('c-quip').textContent=r.quip;
+  document.getElementById('c-vs').textContent=r.vs;
+  document.getElementById('c-next').textContent=r.next;
+  document.getElementById('hint-rank').textContent=ntrp;
+  document.getElementById('c-radar').innerHTML=radarSVG(radar);
+  show('result');
+}
+
+/* ---------------- 雷达 SVG ---------------- */
+function radarSVG(vals){
+  const S=246, c=S/2, R=78, lab=R+24, rings=4;
+  const ang=i=>(-90+i*72)*Math.PI/180;
+  const pt=(i,rad)=>[c+rad*Math.cos(ang(i)), c+rad*Math.sin(ang(i))];
+  let g='';
+  for(let k=1;k<=rings;k++){
+    const rr=R*k/rings, p=vals.map((_,i)=>pt(i,rr).map(n=>n.toFixed(1)).join(',')).join(' ');
+    g+='<polygon points="'+p+'" fill="none" stroke="rgba(20,20,26,.10)" stroke-width="1"/>';
+  }
+  vals.forEach((_,i)=>{const[x,y]=pt(i,R);g+='<line x1="'+c+'" y1="'+c+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="rgba(20,20,26,.10)" stroke-width="1"/>';});
+  const dp=vals.map((val,i)=>pt(i,R*Math.max(val,.08)/4).map(n=>n.toFixed(1)).join(',')).join(' ');
+  g+='<polygon points="'+dp+'" fill="rgba(209,74,36,.16)" stroke="#D14A24" stroke-width="2" stroke-linejoin="round"/>';
+  vals.forEach((val,i)=>{const[x,y]=pt(i,R*Math.max(val,.08)/4);g+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.4" fill="#D14A24"/>';});
+  RADAR_AXES.forEach((nm,i)=>{
+    let[x,y]=pt(i,lab);let anchor='middle';
+    if(x<c-8)anchor='end'; else if(x>c+8)anchor='start';
+    g+='<text x="'+x.toFixed(1)+'" y="'+(y+4).toFixed(1)+'" text-anchor="'+anchor+'" font-family="Geist, Noto Sans SC, sans-serif" font-size="12.5" fill="rgba(20,20,26,.62)">'+nm+'</text>';
+  });
+  return '<svg width="'+S+'" height="'+S+'" viewBox="0 0 '+S+' '+S+'">'+g+'</svg>';
+}
+
+/* ---------------- 动作 ---------------- */
+function retake(){show('intro')}
+function match(){
+  toast('正在攒人 ⏳ 等同段位的球友够多，这里就能<b>一键约到水平相当的人</b>。先把卡发小红书，喊一句「有同段位的吗」？');
+}
+let tt;
+function toast(html){const e=document.getElementById('toast');e.innerHTML=html;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4200)}
+
+async function download(){
+  if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
+  const card=document.getElementById('card');
+  const ntrp=document.getElementById('c-ntrp').textContent.replace(/\s/g,'');
+  try{
+    const canvas=await html2canvas(card,{scale:3,backgroundColor:null,useCORS:true,logging:false});
+    const a=document.createElement('a');
+    a.download='网球段位卡-'+ntrp+'.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+    toast('已保存 ✅ 去小红书发出来吧');
+  }catch(e){toast('保存失败了，截图也行 😅');}
+}
+</script>
+</body>
+</html>

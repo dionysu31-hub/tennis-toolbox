@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>网球赛季战报 · 晒出你的战绩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --ink:#14141A; --ink-70:rgba(20,20,26,.70); --ink-55:rgba(20,20,26,.55); --ink-38:rgba(20,20,26,.38);
+  --ink-12:rgba(20,20,26,.12); --ink-08:rgba(20,20,26,.08);
+  --bone:#F4F1EA; --paper:#FBF9F4; --accent:#D14A24; --accent-soft:rgba(209,74,36,.10);
+  --grass:#C6FF00; --grass-deep:#9FD000;
+  --font-display:"Instrument Serif","Noto Serif SC",Georgia,serif;
+  --font-ui:"Geist","Noto Sans SC",-apple-system,system-ui,sans-serif;
+  --font-mono:"Geist Mono","Noto Sans SC",ui-monospace,monospace;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(20,20,26,.04),0 8px 24px rgba(20,20,26,.07);
+  --shadow-card:0 2px 4px rgba(20,20,26,.05),0 18px 50px rgba(20,20,26,.13);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bone);color:var(--ink);font-family:var(--font-ui);line-height:1.55;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center;background-image:radial-gradient(var(--ink-08) 1px,transparent 1px);background-size:22px 22px}
+.wrap{width:100%;max-width:460px;min-height:100vh;padding:28px 22px 40px;display:flex;flex-direction:column}
+.view{display:none;animation:lift .5s var(--ease) both}
+.view.on{display:flex;flex-direction:column;flex:1}
+@keyframes lift{from{opacity:0;transform:translateY(14px) scale(.99);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+.brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+.brandline::before{content:"";width:14px;height:14px;background:var(--grass);border-radius:3px;box-shadow:0 0 0 1px var(--ink-12) inset}
+.form-head{margin-bottom:24px}
+.form-head h1{font-family:var(--font-display);font-size:46px;line-height:1.02;margin-top:12px}
+.form-head h1 em{font-style:italic;color:var(--accent)}
+.form-head .mark{position:relative;display:inline-block}
+.form-head .mark::after{content:"";position:absolute;left:-2%;right:-2%;bottom:5px;height:11px;background:var(--grass);z-index:-1;opacity:.85;transform:rotate(-1deg)}
+.form-head p{font-size:14.5px;color:var(--ink-70);margin-top:12px}
+.field{margin-bottom:17px}
+.field>label{display:block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-55);margin-bottom:7px}
+.field input{width:100%;font-family:var(--font-ui);font-size:16px;padding:13px 14px;border:1px solid var(--ink-12);border-radius:12px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field-row{display:flex;gap:12px}
+.field-row .field{flex:1}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--font-ui);font-size:14px;padding:10px 15px;border:1px solid var(--ink-12);border-radius:999px;background:var(--paper);color:var(--ink-70);cursor:pointer;box-shadow:var(--shadow)}
+.chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn{appearance:none;border:none;cursor:pointer;font-family:var(--font-ui);font-weight:500;border-radius:var(--radius-btn);transition:transform .15s var(--ease),box-shadow .2s,background .2s}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--ink);color:var(--paper);font-size:17px;padding:17px 22px;width:100%;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
+.btn-primary .dot{width:9px;height:9px;border-radius:50%;background:var(--grass)}
+/* result */
+.r-head{text-align:center;margin-bottom:18px}
+.r-head .brandline{justify-content:center}
+.r-head h2{font-family:var(--font-display);font-size:30px;margin-top:8px}
+.card-stage{display:flex;justify-content:center}
+.card{width:400px;background:var(--paper);border-radius:20px;overflow:hidden;position:relative;box-shadow:var(--shadow-card);border:1px solid var(--ink-08)}
+.card-top{height:7px;background:linear-gradient(90deg,var(--accent) 0 64%,var(--grass) 64% 100%)}
+.card-pad{padding:26px 28px 22px}
+.c-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;justify-content:space-between}
+.c-title{font-family:var(--font-display);font-size:30px;margin-top:10px;line-height:1.05}
+.c-score{display:flex;align-items:flex-end;gap:14px;margin-top:10px}
+.c-big{font-family:var(--font-display);font-size:84px;line-height:.7;letter-spacing:-.02em}
+.c-big small{font-size:24px;color:var(--ink-38);font-family:var(--font-ui);font-weight:500}
+.c-wl{padding-bottom:12px;font-family:var(--font-mono);font-size:14px;color:var(--ink-70)}
+.c-wl b{color:var(--ink);font-size:17px}
+.wr{height:7px;background:var(--ink-08);border-radius:999px;overflow:hidden;margin:18px 0 0}
+.wr i{display:block;height:100%;background:var(--grass-deep);border-radius:999px}
+.wr-lab{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--ink-38);margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ink-08);border-radius:14px;overflow:hidden;margin:18px 0 4px;border:1px solid var(--ink-08)}
+.cell{background:var(--paper);padding:15px 16px}
+.cell .n{font-family:var(--font-display);font-size:32px;line-height:1}
+.cell .n.hot{color:var(--accent)}
+.cell .l{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55);margin-top:5px}
+.c-quip{font-family:var(--font-display);font-size:19px;line-height:1.36;margin:16px 2px 0;color:var(--ink)}
+.c-quip::before{content:"“";color:var(--accent);font-size:24px}
+.c-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:13px;border-top:1px solid var(--ink-08);font-family:var(--font-mono);font-size:10.5px;color:var(--ink-38)}
+.c-foot .badge{display:flex;align-items:center;gap:6px;color:var(--ink-55)}
+.c-foot .badge i{width:10px;height:10px;background:var(--grass);border-radius:2px;display:inline-block}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.btn-row{display:flex;gap:10px}
+.btn-ghost{flex:1;background:var(--paper);border:1px solid var(--ink-12);color:var(--ink);font-size:14.5px;padding:14px;box-shadow:var(--shadow)}
+.hint{margin-top:6px;font-size:12px;color:var(--ink-38);text-align:center}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:14px;max-width:330px;font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-card);transition:opacity .3s,transform .3s;z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast b{color:var(--grass)}
+@media(max-width:430px){.card{width:100%}.c-big{font-size:74px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="view on" id="v-form">
+    <div class="form-head">
+      <div class="brandline">网球赛季战报 · Season</div>
+      <h1>晒出你的<br><span class="mark">网球战绩</span></h1>
+      <p>填一下这段时间的战绩，生成一张可晒的赛季战报卡。</p>
+    </div>
+    <div class="field">
+      <label>战报周期</label>
+      <input id="f-title" type="text" value="2026 赛季" maxlength="16">
+    </div>
+    <div class="field-row">
+      <div class="field"><label>赢了几场</label><input id="f-w" type="number" inputmode="numeric" value="28" min="0"></div>
+      <div class="field"><label>输了几场</label><input id="f-l" type="number" inputmode="numeric" value="19" min="0"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>最长连胜</label><input id="f-streak" type="number" inputmode="numeric" value="6" min="0"></div>
+      <div class="field"><label>主场 / 城市</label><input id="f-city" type="text" value="上海" maxlength="10"></div>
+    </div>
+    <div class="field">
+      <label>赢过的最高水平</label>
+      <div class="chips" id="f-best">
+        <button class="chip" data-v="2.5">2.5</button>
+        <button class="chip" data-v="3.0">3.0</button>
+        <button class="chip sel" data-v="3.5">3.5</button>
+        <button class="chip" data-v="4.0">4.0</button>
+        <button class="chip" data-v="4.5+">4.5+</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>给自己立个 flag（可选）</label>
+      <input id="f-flag" type="text" value="年底冲 4.0" maxlength="18">
+    </div>
+    <button class="btn btn-primary" onclick="gen()"><span class="dot"></span>生成我的赛季战报</button>
+  </section>
+
+  <section class="view" id="v-result">
+    <div class="r-head">
+      <div class="brandline">战报生成 · Wrapped</div>
+      <h2>你的赛季战报</h2>
+    </div>
+    <div class="card-stage">
+      <div class="card" id="card">
+        <div class="card-top"></div>
+        <div class="card-pad">
+          <div class="c-eyebrow"><span>网球赛季战报</span><span id="c-period">2026</span></div>
+          <div class="c-title" id="c-title">2026 赛季</div>
+          <div class="c-score">
+            <div class="c-big" id="c-games">47<small>场</small></div>
+            <div class="c-wl" id="c-wl"><b>28–19</b><br>胜 / 负</div>
+          </div>
+          <div class="wr"><i id="c-wrbar" style="width:60%"></i></div>
+          <div class="wr-lab"><span>胜率</span><span id="c-wrtxt">60%</span></div>
+          <div class="grid">
+            <div class="cell"><div class="n hot" id="c-streak">6</div><div class="l">最长连胜</div></div>
+            <div class="cell"><div class="n" id="c-best">3.5</div><div class="l">赢过最高水平</div></div>
+            <div class="cell"><div class="n" id="c-city">上海</div><div class="l">主场</div></div>
+            <div class="cell"><div class="n" id="c-rate">60%</div><div class="l">胜率</div></div>
+          </div>
+          <p class="c-quip" id="c-quip">战报点评</p>
+          <div class="c-foot">
+            <span class="badge"><i></i>网球赛季战报 · <span id="c-flag">年底冲 4.0</span></span>
+            <span>@你的账号</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="download()"><span class="dot"></span>保存战报 · 发小红书</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="back()">改一改</button>
+        <button class="btn btn-ghost" onclick="rivals()">查我的宿敌</button>
+      </div>
+      <div class="hint">配「我的 2026 网球战报出炉」发出来 👀</div>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let best="3.5";
+document.querySelectorAll('#f-best .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#f-best .chip').forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel'); best=c.dataset.v;
+});
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
+const num=id=>Math.max(0,parseInt(document.getElementById(id).value||'0',10));
+function quip(w,l,streak){
+  const g=w+l, rate=g?w/g:0; let a,b;
+  if(rate>=.65)a='今年你是真打人。'; else if(rate>=.5)a='有来有回，赢面在你这边。';
+  else if(rate>=.35)a='互有胜负，正一点点往上爬。'; else a='输得不亏——回头看，全是在跟比你强的人过招。';
+  if(g>=50)b='这出勤率，球场该给你发个全勤奖。';
+  else if(streak>=5)b='最长 '+streak+' 连胜，那段手感够吹一年。';
+  else if(g>=20)b=g+' 场打下来，球龄又厚了一截。';
+  else b='刚起步，把场次堆起来，进步最快。';
+  return a+b;
+}
+function gen(){
+  const w=num('f-w'), l=num('f-l'), streak=num('f-streak'), g=w+l;
+  const rate=g?Math.round(w/g*100):0;
+  const title=document.getElementById('f-title').value||'我的赛季';
+  const city=document.getElementById('f-city').value||'—';
+  const flag=document.getElementById('f-flag').value.trim();
+  document.getElementById('c-period').textContent=(title.match(/\d{4}/)||['2026'])[0];
+  document.getElementById('c-title').textContent=title;
+  document.getElementById('c-games').innerHTML=g+'<small>场</small>';
+  document.getElementById('c-wl').innerHTML='<b>'+w+'–'+l+'</b><br>胜 / 负';
+  document.getElementById('c-wrbar').style.width=rate+'%';
+  document.getElementById('c-wrtxt').textContent=rate+'%';
+  document.getElementById('c-streak').textContent=streak;
+  document.getElementById('c-best').textContent=best;
+  document.getElementById('c-city').textContent=city;
+  document.getElementById('c-rate').textContent=rate+'%';
+  document.getElementById('c-quip').textContent=quip(w,l,streak);
+  document.getElementById('c-flag').textContent=flag||'下个赛季见';
+  show('result');
+}
+function back(){show('form')}
+function rivals(){toast('正在做 ⚔️ 记录每个对手的 <b>H2H 宿敌战绩</b>，配合约球用。先把战报发小红书攒人气？')}
+let tt;function toast(html){const e=document.getElementById('toast');e.innerHTML=html;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4200)}
+async function download(){
+  if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
+  try{const canvas=await html2canvas(document.getElementById('card'),{scale:3,backgroundColor:null,useCORS:true,logging:false});
+    const a=document.createElement('a');a.download='网球赛季战报.png';a.href=canvas.toDataURL('image/png');a.click();toast('已保存 ✅');
+  }catch(e){toast('保存失败，截图也行 😅');}
+}
+</script>
+</body>
+</html>

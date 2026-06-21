@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>网球工具箱 · 测段位 · 算磅数 · 看挥拍 · 晒战报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14141A; --ink-70:rgba(20,20,26,.70); --ink-55:rgba(20,20,26,.55); --ink-38:rgba(20,20,26,.38);
+  --ink-12:rgba(20,20,26,.12); --ink-08:rgba(20,20,26,.08);
+  --bone:#F4F1EA; --paper:#FBF9F4; --accent:#D14A24; --accent-soft:rgba(209,74,36,.10);
+  --grass:#C6FF00; --grass-deep:#9FD000;
+  --font-display:"Instrument Serif","Noto Serif SC",Georgia,serif;
+  --font-ui:"Geist","Noto Sans SC",-apple-system,system-ui,sans-serif;
+  --font-mono:"Geist Mono","Noto Sans SC",ui-monospace,monospace;
+  --shadow:0 1px 2px rgba(20,20,26,.04),0 8px 24px rgba(20,20,26,.07);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bone);color:var(--ink);font-family:var(--font-ui);line-height:1.55;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center;min-height:100vh;background-image:radial-gradient(var(--ink-08) 1px,transparent 1px);background-size:22px 22px}
+.wrap{width:100%;max-width:460px;padding:34px 22px 40px;display:flex;flex-direction:column;animation:lift .5s var(--ease) both}
+@keyframes lift{from{opacity:0;transform:translateY(14px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+.brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+.brandline::before{content:"";width:14px;height:14px;background:var(--grass);border-radius:3px;box-shadow:0 0 0 1px var(--ink-12) inset}
+.hero{font-family:var(--font-display);font-weight:400;font-size:58px;line-height:1;letter-spacing:-.015em;margin:16px 0 0}
+.hero em{font-style:italic;color:var(--accent)}
+.hero .mark{position:relative;display:inline-block}
+.hero .mark::after{content:"";position:absolute;left:-2%;right:-2%;bottom:6px;height:13px;background:var(--grass);z-index:-1;opacity:.85;transform:rotate(-1.2deg)}
+.sub{font-size:15.5px;color:var(--ink-70);margin-top:14px;max-width:32ch}
+.tools{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+.tool{display:flex;align-items:center;gap:15px;background:var(--paper);border:1px solid var(--ink-08);border-radius:16px;padding:17px 18px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);transition:transform .16s var(--ease),border-color .16s,box-shadow .2s}
+.tool:hover{border-color:var(--ink-38);transform:translateY(-2px);box-shadow:0 4px 8px rgba(20,20,26,.06),0 14px 32px rgba(20,20,26,.1)}
+.tool:active{transform:translateY(0) scale(.99)}
+.tool .em{font-size:26px;width:50px;height:50px;border-radius:13px;background:var(--bone);display:flex;align-items:center;justify-content:center;flex:none}
+.tool .tx{flex:1}
+.tool .tx h3{font-family:var(--font-display);font-size:22px;line-height:1.08}
+.tool .tx p{font-size:13px;color:var(--ink-55);margin-top:2px}
+.tool .ar{color:var(--ink-38);font-size:17px;font-family:var(--font-mono);transition:transform .16s var(--ease),color .16s}
+.tool:hover .ar{color:var(--accent);transform:translateX(3px)}
+.foot{margin-top:30px;border-top:1px solid var(--ink-08);padding-top:22px}
+.foot .big{font-family:var(--font-display);font-size:23px;line-height:1.3}
+.foot .big em{font-style:italic;color:var(--accent)}
+.foot .note{margin-top:12px;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-55);background:var(--accent-soft);padding:8px 13px;border-radius:999px}
+.foot .note i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block}
+.copyfoot{margin-top:24px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-38);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandline">网球工具箱 · Tennis Kit</div>
+  <h1 class="hero">打网球的，<br>先来<span class="mark">量一量</span>。</h1>
+  <p class="sub">4 个小工具：测段位、算磅数、看挥拍、晒战报。用完都给你一张能发小红书的卡。</p>
+
+  <div class="tools">
+    <a class="tool" href="./level/index.html">
+      <div class="em">🎾</div>
+      <div class="tx"><h3>我是几段网球</h3><p>8 题测出 NTRP 段位 + 五维能力，出段位卡</p></div>
+      <div class="ar">→</div>
+    </a>
+    <a class="tool" href="./string/index.html">
+      <div class="em">🎯</div>
+      <div class="tx"><h3>该穿几磅线</h3><p>算出你的磅数处方，附护手腕提醒</p></div>
+      <div class="ar">→</div>
+    </a>
+    <a class="tool" href="./swing/index.html">
+      <div class="em">🤖</div>
+      <div class="tx"><h3>AI 看我挥拍</h3><p>上传视频，AI 拆动作、挑毛病、出诊断卡</p></div>
+      <div class="ar">→</div>
+    </a>
+    <a class="tool" href="./season/index.html">
+      <div class="em">📊</div>
+      <div class="tx"><h3>我的赛季战报</h3><p>填战绩，一键生成网球年度 Wrapped</p></div>
+      <div class="ar">→</div>
+    </a>
+  </div>
+
+  <div class="foot">
+    <div class="big">先知道你<em>什么水平</em>，<br>再帮你约到对的人。</div>
+    <div class="note"><i></i>约球 / 找搭子功能正在攒人，敬请期待</div>
+  </div>
+  <div class="copyfoot">网球工具箱 · 2026 · 用完记得把卡发出来 🎾</div>
+</div>
+</body>
+</html>
