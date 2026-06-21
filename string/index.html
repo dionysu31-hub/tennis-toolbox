@@ -3,287 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>网球穿线磅数计算器 · 你该穿几磅？</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>网球选拍推荐 · 你该买什么拍、穿几磅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/app.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-:root{
-  --ink:#14141A; --ink-70:rgba(20,20,26,.70); --ink-55:rgba(20,20,26,.55); --ink-38:rgba(20,20,26,.38);
-  --ink-12:rgba(20,20,26,.12); --ink-08:rgba(20,20,26,.08); --ink-04:rgba(20,20,26,.04);
-  --bone:#F4F1EA; --paper:#FBF9F4; --accent:#D14A24; --accent-soft:rgba(209,74,36,.10);
-  --grass:#C6FF00; --grass-deep:#9FD000; --warn:#B4521A;
-  --font-display:"Instrument Serif","Noto Serif SC",Georgia,serif;
-  --font-ui:"Geist","Noto Sans SC",-apple-system,system-ui,sans-serif;
-  --font-mono:"Geist Mono","Noto Sans SC",ui-monospace,monospace;
-  --radius-btn:12px;
-  --shadow:0 1px 2px rgba(20,20,26,.04),0 8px 24px rgba(20,20,26,.07);
-  --shadow-card:0 2px 4px rgba(20,20,26,.05),0 18px 50px rgba(20,20,26,.13);
-  --ease:cubic-bezier(.2,.7,.2,1);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{background:var(--bone);color:var(--ink);font-family:var(--font-ui);line-height:1.55;-webkit-font-smoothing:antialiased;
-  display:flex;justify-content:center;background-image:radial-gradient(var(--ink-08) 1px,transparent 1px);background-size:22px 22px}
-.wrap{width:100%;max-width:460px;min-height:100vh;padding:28px 22px 40px;display:flex;flex-direction:column}
-.view{display:none;animation:lift .5s var(--ease) both}
-.view.on{display:flex;flex-direction:column;flex:1}
-@keyframes lift{from{opacity:0;transform:translateY(14px) scale(.99);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
-.brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
-.brandline::before{content:"";width:14px;height:14px;background:var(--grass);border-radius:3px;box-shadow:0 0 0 1px var(--ink-12) inset}
-/* intro */
-.intro-top{flex:1;display:flex;flex-direction:column;justify-content:center}
-.hero{font-family:var(--font-display);font-weight:400;font-size:58px;line-height:.99;letter-spacing:-.015em;margin:18px 0 4px}
-.hero em{font-style:italic;color:var(--accent)}
-.hero .mark{display:inline-block;position:relative}
-.hero .mark::after{content:"";position:absolute;left:-2%;right:-2%;bottom:7px;height:13px;background:var(--grass);z-index:-1;opacity:.85;transform:rotate(-1.2deg)}
-.sub{font-size:16px;color:var(--ink-70);margin-top:14px;max-width:31ch}
-.meta-row{display:flex;gap:18px;margin-top:26px;font-family:var(--font-mono);font-size:12px;color:var(--ink-55)}
-.meta-row b{color:var(--ink);font-weight:500}
-.btn{appearance:none;border:none;cursor:pointer;font-family:var(--font-ui);font-weight:500;border-radius:var(--radius-btn);transition:transform .15s var(--ease),box-shadow .2s var(--ease),background .2s}
-.btn:active{transform:translateY(1px) scale(.99)}
-.btn-primary{background:var(--ink);color:var(--paper);font-size:17px;padding:17px 22px;width:100%;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-primary .dot{width:9px;height:9px;border-radius:50%;background:var(--grass)}
-.intro-foot{margin-top:14px;font-size:12.5px;color:var(--ink-38);text-align:center}
-/* quiz */
-.q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.q-count{font-family:var(--font-mono);font-size:13px;color:var(--ink-55)}
-.q-count b{color:var(--accent);font-size:15px}
-.bar{height:5px;background:var(--ink-08);border-radius:999px;overflow:hidden;margin-bottom:30px}
-.bar>i{display:block;height:100%;background:var(--ink);border-radius:999px;transition:width .45s var(--ease)}
-.q-dim{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.q-title{font-family:var(--font-display);font-size:33px;line-height:1.1;letter-spacing:-.01em;margin-bottom:8px}
-.q-note{font-size:13px;color:var(--ink-38);margin-bottom:24px}
-.opts{display:flex;flex-direction:column;gap:11px}
-.opt{text-align:left;background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;padding:16px 17px;font-size:15.5px;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .18s,background .18s;box-shadow:var(--shadow)}
-.opt:hover{border-color:var(--ink-38)}
-.opt .ix{font-family:var(--font-mono);font-size:12px;color:var(--ink-38);border:1px solid var(--ink-12);border-radius:7px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:none}
-.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
-.opt.sel .ix{background:var(--accent);color:#fff;border-color:var(--accent)}
-.q-back{margin-top:24px;background:none;border:none;font-family:var(--font-mono);font-size:13px;color:var(--ink-38);cursor:pointer;align-self:flex-start}
-.q-back:hover{color:var(--ink)}
-/* result */
-.r-head{text-align:center;margin-bottom:18px}
-.r-head .brandline{justify-content:center}
-.r-head h2{font-family:var(--font-display);font-size:30px;margin-top:8px}
-.card-stage{display:flex;justify-content:center}
-.card{width:400px;background:var(--paper);border-radius:20px;overflow:hidden;position:relative;box-shadow:var(--shadow-card);border:1px solid var(--ink-08)}
-.card-top{height:7px;background:linear-gradient(90deg,var(--accent) 0 64%,var(--grass) 64% 100%)}
-.card-pad{padding:26px 28px 22px}
-.c-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;justify-content:space-between}
-.c-rank{display:flex;align-items:flex-end;gap:12px;margin-top:12px}
-.c-lbs{font-family:var(--font-display);font-size:98px;line-height:.7;letter-spacing:-.03em}
-.c-lbs small{font-size:26px;color:var(--ink-38);font-family:var(--font-ui);font-weight:500;letter-spacing:0}
-.c-tagline{padding-bottom:13px;font-family:var(--font-display);font-style:italic;font-size:23px;color:var(--accent);line-height:1.05}
-.spec{position:relative;height:8px;background:var(--ink-08);border-radius:999px;margin:40px 4px 30px}
-.spec-fill{position:absolute;top:0;height:100%;background:var(--accent);border-radius:999px;box-shadow:0 0 0 4px var(--accent-soft)}
-.spec-cur{position:absolute;bottom:15px;transform:translateX(-50%);font-family:var(--font-mono);font-size:11px;color:var(--accent);font-weight:600;white-space:nowrap}
-.spec-lab{position:absolute;top:14px;font-family:var(--font-mono);font-size:9px;color:var(--ink-38);white-space:nowrap}
-.c-quip{font-family:var(--font-display);font-size:19px;line-height:1.36;margin:8px 2px 18px;color:var(--ink)}
-.c-quip::before{content:"“";color:var(--accent);font-size:25px;margin-right:1px}
-.c-rows{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--ink-08);padding-top:16px}
-.c-row{display:flex;gap:12px;align-items:flex-start}
-.c-row .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-38);width:74px;flex:none;padding-top:2px}
-.c-row .v{font-size:13.5px;color:var(--ink-70);line-height:1.5}
-.c-row .v b{color:var(--ink);font-weight:600}
-.c-note{margin-top:15px;background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--warn);line-height:1.5;display:none}
-.c-note.on{display:block}
-.c-note b{font-weight:600}
-.c-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:13px;border-top:1px solid var(--ink-08);font-family:var(--font-mono);font-size:10.5px;color:var(--ink-38)}
-.c-foot .badge{display:flex;align-items:center;gap:6px;color:var(--ink-55)}
-.c-foot .badge i{width:10px;height:10px;background:var(--grass);border-radius:2px;display:inline-block}
-.actions{display:flex;flex-direction:column;gap:10px;margin-top:24px}
-.btn-row{display:flex;gap:10px}
-.btn-ghost{flex:1;background:var(--paper);border:1px solid var(--ink-12);color:var(--ink);font-size:14.5px;padding:14px;box-shadow:var(--shadow)}
-.btn-ghost:hover{border-color:var(--ink-38)}
-.hint{margin-top:6px;font-size:12px;color:var(--ink-38);text-align:center;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:14px;max-width:330px;font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-card);transition:opacity .3s,transform .3s var(--ease);z-index:50}
-.toast.on{opacity:1;transform:translateX(-50%)}
-.toast b{color:var(--grass)}
-@media(max-width:430px){.hero{font-size:50px}.card{width:100%}.c-lbs{font-size:84px}}
+.cc-rk{font-family:var(--font-display);font-size:34px;line-height:1.05;color:#fff;margin-top:6px}
+.cc-spec{font-family:var(--font-mono);font-size:11.5px;color:var(--on-court-dim);margin-top:8px;letter-spacing:.02em}
+.cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.cc-tags span{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.14);color:var(--on-court)}
+.cc-tags span.ball{background:var(--ball);color:#1a3a12;width:auto;height:auto;border-radius:999px;box-shadow:none}
+.alt{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-top:1px solid var(--ink-08)}
+.alt .an{font-family:var(--font-display);font-size:17px;flex:none;width:40%}
+.alt .ad{font-size:12.5px;color:var(--ink-55);line-height:1.45}
+.trap{font-size:12.5px;color:var(--warn);line-height:1.6;padding-left:18px;position:relative;margin-top:7px}
+.trap::before{content:"⚠";position:absolute;left:0;font-size:11px}
 </style>
 </head>
 <body>
+<a href="../index.html" class="nav-home" title="工具箱">←</a>
 <div class="wrap">
 
   <section class="view on" id="v-intro">
     <div class="intro-top">
-      <div class="brandline">穿线磅数计算器 · Stringing</div>
-      <h1 class="hero">你的拍，<br>该穿<span class="mark">几磅</span>？</h1>
-      <p class="sub">穿错磅数轻则没手感，重则慢性伤手腕。5 道题，给你一个靠谱的磅数处方。</p>
-      <div class="meta-row">
-        <span><b>5</b> 题</span>
-        <span><b>30</b> 秒</span>
-        <span>含<b>护臂提醒</b></span>
-      </div>
+      <div class="brandline"><span class="logo"></span>选拍推荐 · Racket</div>
+      <h1 class="hero">你该买<br>什么<span class="mark">拍</span>？</h1>
+      <p class="sub">别再瞎选或盲目跟风同款。6 个问题，像懂球的朋友帮你挑 2-3 把拍，连穿几磅一起告诉你。</p>
+      <div class="tips">🎾 <b>护手腕优先</b>：手臂有伤/怕伤，会自动帮你避开"震手"的硬框，这是新手最容易踩的坑。</div>
+      <div class="meta-row"><span><b>6</b> 题</span><span><b>30</b> 秒</span><span>含<b>穿线磅数</b></span></div>
     </div>
-    <button class="btn btn-primary" onclick="start()"><span class="dot"></span>算我该穿几磅</button>
-    <div class="intro-foot">业余穿线通用经验 · 仅供参考，最终听你的穿线师</div>
+    <button class="btn btn-primary" onclick="start()"><span class="dot"></span>帮我挑拍</button>
+    <div class="intro-foot">参数参考 Tennis Warehouse / 品牌官标 · 价格为国内大致参考</div>
   </section>
 
   <section class="view" id="v-quiz">
-    <div class="q-head">
-      <div class="q-count"><b id="q-cur">01</b> / <span id="q-tot">05</span></div>
-      <div class="brandline" style="font-size:10px">Stringing</div>
-    </div>
-    <div class="bar"><i id="q-bar" style="width:0%"></i></div>
-    <div class="q-dim" id="q-dim">水平</div>
-    <h2 class="q-title" id="q-title">题目</h2>
-    <div class="q-note" id="q-note"></div>
-    <div class="opts" id="q-opts"></div>
-    <button class="q-back" id="q-back" onclick="prev()" style="display:none">← 上一题</button>
+    <div class="q-head"><div class="q-count"><b id="qc">01</b> / 6</div><div class="brandline" style="font-size:10px"><span class="logo"></span>Racket</div></div>
+    <div class="bar"><i id="qbar" style="width:0%"></i></div>
+    <div class="q-dim" id="qdim">水平</div>
+    <h2 class="q-title" id="qt">题目</h2>
+    <div class="q-note" id="qn"></div>
+    <div class="opts" id="qo"></div>
+    <button class="back-link" id="qback" onclick="prev()" style="display:none">← 上一题</button>
   </section>
 
   <section class="view" id="v-result">
-    <div class="r-head">
-      <div class="brandline">你的磅数处方 · Rx</div>
-      <h2>这是你的穿线处方</h2>
-    </div>
-    <div class="card-stage">
-      <div class="card" id="card">
-        <div class="card-top"></div>
-        <div class="card-pad">
-          <div class="c-eyebrow"><span>穿线处方 · STRINGING</span><span id="c-date">2026</span></div>
-          <div class="c-rank">
-            <div class="c-lbs" id="c-lbs"><span class="n">52–55</span> <small>lbs</small></div>
-          </div>
-          <div class="c-tagline" id="c-tagline">控制与力量的平衡点</div>
-          <div class="spec" id="c-spec"></div>
-          <p class="c-quip" id="c-quip">点评</p>
-          <div class="c-rows">
-            <div class="c-row"><div class="k">推荐线种</div><div class="v" id="c-string">—</div></div>
-            <div class="c-row"><div class="k">线径粗细</div><div class="v" id="c-gauge">—</div></div>
-            <div class="c-row"><div class="k">换线周期</div><div class="v" id="c-cycle">—</div></div>
-          </div>
-          <div class="c-note" id="c-note"></div>
-          <div class="c-foot">
-            <span class="badge"><i></i>穿线磅数计算器</span>
-            <span id="c-handle">@你的账号 · 2026</span>
-          </div>
+    <div class="r-head"><div class="brandline"><span class="logo"></span>选拍处方 · 主推</div><h2>给你挑了这把</h2></div>
+    <div class="card-stage"><div class="card grain" id="card">
+      <div class="card-court">
+        <div class="cc-eyebrow"><span>选拍处方 · RACKET</span><span>2026</span></div>
+        <div class="cc-rk" id="cc-rk">Wilson Clash 100<span class="ball" style="position:static;display:inline-block;margin-left:6px;vertical-align:middle"></span></div>
+        <div class="cc-spec" id="cc-spec">100 拍面 · 295g · 16×19</div>
+        <div class="cc-tags" id="cc-tags"></div>
+      </div>
+      <div class="card-pad">
+        <p class="c-quip" id="cc-why">为什么适合你</p>
+        <div class="c-rows">
+          <div class="c-row"><div class="k">它的代价</div><div class="v" id="cc-cost">—</div></div>
+          <div class="c-row"><div class="k">参考价</div><div class="v" id="cc-price">—</div></div>
+          <div class="c-row"><div class="k">穿线建议</div><div class="v" id="cc-string">—</div></div>
         </div>
+        <div style="margin-top:16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40)">备选</div>
+        <div id="cc-alts"></div>
+        <div style="margin-top:16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40);margin-bottom:6px">新手别踩的坑</div>
+        <div id="cc-traps"></div>
+        <div class="c-foot"><span class="badge"><span class="ball"></span>选拍推荐</span><span>@你的账号 · 2026</span></div>
       </div>
-    </div>
+    </div></div>
     <div class="actions">
-      <button class="btn btn-primary" onclick="download()"><span class="dot"></span>保存处方 · 发小红书</button>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="retake()">重新算一次</button>
-        <button class="btn btn-ghost" onclick="more()">附近哪穿线？</button>
-      </div>
-      <div class="hint">截图发小红书，配「网球新手别瞎穿线，先看这个」试试 👀</div>
+      <button class="btn btn-primary" onclick="dl()"><span class="dot"></span>保存选拍方案 · 发小红书</button>
+      <button class="btn btn-ghost" onclick="retake()">重新挑</button>
+      <div class="hint">配「新手别瞎买拍，这样选才对」发出来 👀</div>
     </div>
   </section>
-
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const Q = [
-  {dim:"水平", t:"你现在什么水平？", note:"水平越高，越吃得住高磅带来的控制。", key:"level", opts:[
-    ["新手起步（半年内）","new"],["进阶在练（能对拉）","mid"],["老手 / 高水平（打过比赛）","pro"]]},
-  {dim:"打法风格", t:"你打球什么风格？", note:"暴力上旋吃控制，磅数要顶上去；力量不足则要降磅借力。", key:"style", opts:[
-    ["力量型 · 大力抽、暴力上旋","power"],["全面型 · 啥都来一点","all"],["控制型 · 稳准为主、不爱发力","control"],["还没风格 / 不确定","unknown"]]},
-  {dim:"拍面大小", t:"你的拍面多大？", note:"看拍框上的 sq.in。不确定就选最常见的那个。", key:"head", opts:[
-    ["中拍面 ≤98（控制拍）","small"],["中大 99–104（最常见）","mid"],["大拍面 ≥105（轻松借力）","large"],["完全不知道","unknown"]]},
-  {dim:"线种偏好", t:"想穿什么线？", note:"聚酯=硬、耐打、控制好但伤手；软线=舒适护臂但不耐打。", key:"string", opts:[
-    ["聚酯硬线 · 耐打控制","poly"],["软线 · 尼龙/天然肠线 · 舒适","soft"],["混合穿法","hybrid"],["不懂，帮我推荐","unknown"]]},
-  {dim:"手臂状况", t:"手臂、手腕还好吗？", note:"这一项最重要——它直接决定要不要为你压低磅数。", key:"arm", opts:[
-    ["一切正常","ok"],["偶尔酸 / 怕受伤","care"],["有过网球肘 / 手腕伤","injured"]]},
+const Q=[
+ {key:'level',dim:'水平',q:'你现在什么水平？',note:'决定拍面大小、重量、容错。',opts:['新手起步（半年内）','进阶在练（能对拉）','老手 / 高水平']},
+ {key:'style',dim:'打法',q:'你打球什么风格？',note:'决定线床和拍系。',opts:['暴力上旋 · 大力抽','平击快攻 · 抢上升点','底线全面 · 攻守均衡','防守 / 削球 / 单反','双打网前为主','还没定型']},
+ {key:'power',dim:'力量',q:'你的力量/体能？',note:'挥一支 300g 的拍打 30 分钟会不会累？',opts:['偏小，会累','中等','大，不怕重']},
+ {key:'arm',dim:'手臂',q:'手臂、手腕还好吗？',note:'最重要的一题——决定要不要避开硬框。',opts:['一切正常','偶尔酸 / 怕受伤','有过网球肘 / 手腕伤']},
+ {key:'budget',dim:'预算',q:'预算大概多少？',note:'单位：人民币，整框参考价。',opts:['入门（<700）','主流（1000–1800）','不限']},
+ {key:'gender',dim:'握把',q:'你的性别？',note:'只用来定默认握把和重量挡，真正决策靠力量那题。',opts:['女','男']},
+];
+// 型号库（参数参考 Tennis Warehouse / 官标；价格国内大致参考）
+const R={
+ ts6:{n:'Head Ti.S6',s:'115 拍面 · 225g · 超轻',p:'约 ¥500–700',c:'极轻好上手，但遇强力球会被顶飞，水平上来要换。',t:['新手','超轻']},
+ clash108:{n:'Wilson Clash 108',s:'108 拍面 · 280g · RA≈55',p:'约 ¥1700–2000',c:'容错+护手都顶，但偏软、想要凌厉进攻感会觉得"闷"。',t:['新手','护肘']},
+ clash100:{n:'Wilson Clash 100 v3',s:'100 拍面 · 295g · RA≈55',p:'约 ¥1800–2100',c:'护手感标杆，但纯力量型会嫌它不够"弹"。',t:['护肘','全面']},
+ clash100L:{n:'Wilson Clash 100L',s:'100 拍面 · 280g · RA≈55',p:'约 ¥1800–2000',c:'轻+护手+灵活，代价是面对重球稳定性略弱。',t:['护肘','轻量','女性友好']},
+ ezone:{n:'Yonex EZONE 100',s:'100 拍面 · 300g · 偏软',p:'约 ¥2000–2300',c:'舒适+可控力量，全面但不极端，没有特别突出的"个性"。',t:['全面','护肘倾向']},
+ ezone100L:{n:'Yonex EZONE 100L',s:'100 拍面 · 285g · 偏软',p:'约 ¥1900–2100',c:'轻量舒适，力量靠自己补一点。',t:['轻量','女性友好']},
+ puredrive:{n:'Babolat Pure Drive',s:'100 拍面 · 300g · 16×19',p:'约 ¥1900–2300',c:'"易出力"标杆、进阶通用，但偏硬、震手，伤肘者别碰。',t:['全面','力量']},
+ puredriveLite:{n:'Babolat Pure Drive Lite',s:'100 拍面 · 270g · 16×19',p:'约 ¥1800–2000',c:'轻+有力量，但硬框对手臂不友好，有伤慎选。',t:['轻量','力量']},
+ aero:{n:'Babolat Pure Aero',s:'100 拍面 · 300g · 上旋怪',p:'约 ¥2000–2300',c:'上旋火力拉满（Nadal 系），但偏硬震手，明确不护肘。',t:['上旋','力量']},
+ vcore:{n:'Yonex VCORE 100',s:'100 拍面 · 300g · 上旋',p:'约 ¥2000–2200',c:'要重上旋又怕伤肘的少数选择，比 Aero 软一点。',t:['上旋','护肘倾向']},
+ blade:{n:'Wilson Blade 98 v9',s:'98 拍面 · 305g · 16×19',p:'约 ¥1900–2200',c:'进阶到高手的控制全面拍，新手会嫌它"要自己发力"。',t:['控制','进阶+']},
+ protour:{n:'Wilson Pro Tour 95',s:'95 拍面 · 310g · 18×20',p:'约 ¥2000',c:'郑钦文实战拍，密线床极致控制——新手照买会非常难打。',t:['控制','高手向']},
+};
+const TRAPS_BASE=[
+ '别买明星专业拍：郑钦文实战是 Pro Tour 95、费德勒 RF97（340g），都重/硬/难打，新手照买等于练废动作。',
+ '别只看"重量"：同 300g 打感可天差地别，关键看挥重——别被一个数字骗了。',
+ '别买大握把：宁可小半号加 overgrip，握把太大易致网球肘、也不好转手腕。',
 ];
 
-let cur=0; const ans=new Array(Q.length).fill(null);
-function start(){cur=0;ans.fill(null);show('quiz');renderQ()}
+let cur=0;const ans=new Array(Q.length).fill(null);
+function start(){cur=0;ans.fill(null);show('quiz');render()}
 function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
 const pad=n=>String(n).padStart(2,'0');
-function renderQ(){
-  const q=Q[cur];
-  document.getElementById('q-cur').textContent=pad(cur+1);
-  document.getElementById('q-tot').textContent=pad(Q.length);
-  document.getElementById('q-bar').style.width=(cur/Q.length*100)+'%';
-  document.getElementById('q-dim').textContent=q.dim;
-  document.getElementById('q-title').textContent=q.t;
-  document.getElementById('q-note').textContent=q.note||'';
-  document.getElementById('q-back').style.display=cur>0?'block':'none';
-  const box=document.getElementById('q-opts');box.innerHTML='';
-  q.opts.forEach((o,i)=>{const b=document.createElement('button');
-    b.className='opt'+(ans[cur]===i?' sel':'');
-    b.innerHTML='<span class="ix">'+String.fromCharCode(65+i)+'</span><span>'+o[0]+'</span>';
-    b.onclick=()=>pick(i);box.appendChild(b);});
-}
-function pick(i){
-  ans[cur]=i;
-  document.querySelectorAll('#q-opts .opt').forEach((e,ix)=>e.classList.toggle('sel',ix===i));
-  document.getElementById('q-bar').style.width=((cur+1)/Q.length*100)+'%';
-  setTimeout(()=>{if(cur<Q.length-1){cur++;renderQ();}else finish();},260);
-}
-function prev(){if(cur>0){cur--;renderQ()}}
+function render(){const q=Q[cur];
+ document.getElementById('qc').textContent=pad(cur+1);
+ document.getElementById('qbar').style.width=(cur/Q.length*100)+'%';
+ document.getElementById('qdim').textContent=q.dim;document.getElementById('qt').textContent=q.q;document.getElementById('qn').textContent=q.note;
+ document.getElementById('qback').style.display=cur>0?'block':'none';
+ const box=document.getElementById('qo');box.innerHTML='';
+ q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt'+(ans[cur]===i?' sel':'');
+  b.innerHTML='<span class="ix">'+String.fromCharCode(65+i)+'</span><span class="ox">'+o+'</span>';b.onclick=()=>pick(i);box.appendChild(b)})}
+function pick(i){ans[cur]=i;document.querySelectorAll('#qo .opt').forEach((e,x)=>e.classList.toggle('sel',x===i));
+ document.getElementById('qbar').style.width=((cur+1)/Q.length*100)+'%';
+ setTimeout(()=>{if(cur<Q.length-1){cur++;render()}else finish()},240)}
+function prev(){if(cur>0){cur--;render()}}
 
-function val(key){const qi=Q.findIndex(q=>q.key===key);return Q[qi].opts[ans[qi]??0][1];}
-function calc(){
-  const v={level:val('level'),style:val('style'),head:val('head'),string:val('string'),arm:val('arm')};
-  let m=53;
-  m+={new:-3,mid:0,pro:3}[v.level];
-  m+={power:2,all:0,control:-1,unknown:-1}[v.style];
-  m+={small:-2,mid:0,large:2,unknown:0}[v.head];
-  m+={poly:-2,soft:1,hybrid:0,unknown:0}[v.string];
-  m+={ok:0,care:-2,injured:-5}[v.arm];
-  m=Math.max(44,Math.min(62,Math.round(m)));
-  const lo=Math.max(42,m-1), hi=Math.min(64,m+2);
-  // 线种
-  let str,note='';
-  if(v.arm==='injured'){str='<b>天然肠线 / 顶级多丝软线</b>';note='你提到<b>有过伤</b>——已优先护臂：避开聚酯硬线、磅数也压到了低区。手好了再谈控制。';}
-  else if(v.arm==='care'){str='<b>多丝软线（尼龙）</b>';note='为保护手臂，给你<b>避开了高磅和硬线</b>。先把手照顾好。';}
-  else if(v.string==='poly'){str='<b>聚酯硬线</b>（耐打、控制好）';}
-  else if(v.string==='soft'){str='<b>多丝软线</b>（尼龙 / 天然肠线）';}
-  else if(v.string==='hybrid'){str='<b>混合穿法</b>（竖聚酯 + 横软线）';}
-  else{str=(v.level==='pro'&&v.style==='power')?'<b>聚酯硬线</b>（耐打、控制好）':'<b>多丝软线</b>（尼龙·万能入门）';}
-  // 线径
-  const gauge=v.level==='new'?'<b>1.30 mm</b> 偏粗、耐打':v.level==='pro'?'<b>1.20–1.25 mm</b> 偏细、手感好':'<b>1.25–1.30 mm</b> 通用';
-  // 换线周期
-  const cycle=v.string==='poly'?'每 <b>1–2 个月</b>（聚酯掉弹性快，断不断都该换）':'每周打几次，就隔几个月换；最长别超 <b>半年</b>';
-  // tagline
-  const tag = m>=58?'控制狂的硬核区':m>=54?'控制与力量的平衡点':m>=49?'舒适借力为主':'省力护臂的软弹区';
-  // 点评
-  let quip;
-  if(v.arm==='injured'||v.arm==='care') quip='护臂第一。这个磅数和线，是给你的手腕留条活路。';
-  else if(v.level==='new') quip='新手别迷信高磅。低一点更省力、球更容易过网，也更不容易把手打废。';
-  else if(v.style==='power') quip='你这打法吃控制。磅数顶上去，抽得狠也兜得住。';
-  else if(v.style==='control') quip='控制型不缺准头，磅数压一点，换点甜区和力量回来。';
-  else quip='一个稳妥的区间。先按这个穿，打两次不对劲再微调 2 磅。';
-  return {lo,hi,m,str,gauge,cycle,tag,quip,note};
+function recommend(a){
+ const level=a.level,style=a.style,power=a.power,arm=a.arm,budget=a.budget,gender=a.gender;
+ let pool,note='';
+ if(arm>=1){ pool=['clash100','ezone','clash100L']; note='护手优先' }
+ else if(level===0){ pool=budget===0?['ts6','clash108']:['clash108','clash100','puredriveLite'] }
+ else if(power===0||gender===0){ pool=['clash100L','ezone100L','puredriveLite'] }
+ else if(level===2&&(style===1||style===3)){ pool=['blade','protour','ezone'] }
+ else if(style===0){ pool=arm>=1?['vcore','ezone']:['aero','vcore','puredrive'] }
+ else { pool=['puredrive','ezone','clash100'] }
+ if(budget===0){ const cheap=['ts6','clash108']; if(!cheap.includes(pool[0])) pool=['clash108','ts6']; }
+ const main=R[pool[0]], alts=pool.slice(1,3).map(k=>R[k]);
+ // 穿线建议
+ let st;
+ if(arm>=1) st='<b>48–52 磅 + 软线（多丝/天然肠线）</b>，护手腕第一，别拉高磅。';
+ else if(level===0) st='<b>48–52 磅 + 多丝软线</b>，省力、弹性好、容易把球打过网。';
+ else if(style===0) st='<b>52–55 磅 + 聚酯硬线</b>，扛得住你的暴力上旋，控制好。';
+ else st='<b>52–55 磅</b>，进阶通用区间；想要更多控制往上 1-2 磅，想要力量往下。';
+ // 标签 + 理由
+ const why=buildWhy(a,main);
+ const traps=[...TRAPS_BASE];
+ if(arm>=1) traps.unshift('怕伤肘千万别贪"好出力"的硬框（如 Pure Drive/Aero）——配软线、别拉高磅同样重要。');
+ if(budget===0) traps.push('新手别纠结几百块的旗舰：动作没定型，入门容错大拍足够，打出兴趣再升级。');
+ return {main,alts,st,why,traps};
+}
+function buildWhy(a,m){
+ const bits=[];
+ if(a.arm>=1) bits.push('你提到手臂怕受伤，所以优先挑了软框、护手的拍');
+ if(a.level===0) bits.push('新手阶段靠大甜区和容错把球打稳');
+ if(a.power===0) bits.push('力量偏小，给你挑了轻一点、好挥的');
+ if(a.style===0) bits.push('暴力上旋需要疏线床咬球');
+ if(a.level===2&&(a.style===1||a.style===3)) bits.push('你有控制需求，密一点的线床更精准');
+ if(!bits.length) bits.push('综合你的水平和打法，这把全面、好上手、不挑人');
+ return bits.join('；')+'。'+m.n.split(' ')[0]+' 这把正中你的需求。';
 }
 function finish(){
-  const r=calc();
-  document.getElementById('c-lbs').innerHTML='<span class="n">'+r.lo+'–'+r.hi+'</span> <small>lbs</small>';
-  document.getElementById('c-tagline').textContent=r.tag;
-  document.getElementById('c-spec').innerHTML=specHTML(r.lo,r.hi);
-  document.getElementById('c-quip').textContent=r.quip;
-  document.getElementById('c-string').innerHTML=r.str;
-  document.getElementById('c-gauge').innerHTML=r.gauge;
-  document.getElementById('c-cycle').innerHTML=r.cycle;
-  const noteEl=document.getElementById('c-note');
-  if(r.note){noteEl.innerHTML='⚠ '+r.note;noteEl.classList.add('on');}else{noteEl.classList.remove('on');}
-  show('result');
-}
-function specHTML(lo,hi){
-  const MN=44,MX=62,span=MX-MN;
-  const l=Math.max(0,(lo-MN)/span*100), w=Math.min(100,(hi-lo)/span*100), mid=l+w/2;
-  return '<div class="spec-fill" style="left:'+l+'%;width:'+w+'%"></div>'
-    +'<div class="spec-cur" style="left:'+mid+'%">'+lo+'–'+hi+' lbs</div>'
-    +'<div class="spec-lab" style="left:0">44 软·弹·省力</div>'
-    +'<div class="spec-lab" style="right:0">硬·控制 62</div>';
+ const a={};Q.forEach((q,i)=>a[q.key]=ans[i]??0);
+ const r=recommend(a);
+ document.getElementById('cc-rk').innerHTML=r.main.n+'<span class="ball" style="position:static;display:inline-block;margin-left:6px;vertical-align:middle"></span>';
+ document.getElementById('cc-spec').textContent=r.main.s;
+ document.getElementById('cc-tags').innerHTML=r.main.t.map((t,i)=>'<span'+(i===0?' class="ball"':'')+'>'+t+'</span>').join('');
+ document.getElementById('cc-why').textContent=r.why;
+ document.getElementById('cc-cost').textContent=r.main.c;
+ document.getElementById('cc-price').textContent=r.main.p;
+ document.getElementById('cc-string').innerHTML=r.st;
+ document.getElementById('cc-alts').innerHTML=r.alts.map(x=>'<div class="alt"><div class="an">'+x.n+'</div><div class="ad">'+x.s+'<br>'+x.t.join(' · ')+'</div></div>').join('');
+ document.getElementById('cc-traps').innerHTML=r.traps.map(t=>'<div class="trap">'+t+'</div>').join('');
+ show('result');
 }
 function retake(){show('intro')}
-function more(){toast('正在做 📍 同城<b>穿线店 / 球友推荐</b>正在攒。先把处方发小红书，问一句「××哪家穿线靠谱」？')}
-let tt;function toast(html){const e=document.getElementById('toast');e.innerHTML=html;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4200)}
-async function download(){
-  if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
-  const card=document.getElementById('card');
-  try{const canvas=await html2canvas(card,{scale:3,backgroundColor:null,useCORS:true,logging:false});
-    const a=document.createElement('a');a.download='穿线处方.png';a.href=canvas.toDataURL('image/png');a.click();
-    toast('已保存 ✅ 去小红书发出来吧');
-  }catch(e){toast('保存失败了，截图也行 😅');}
-}
+let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4200)}
+async function dl(){if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
+ try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});
+  const a=document.createElement('a');a.download='选拍方案.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
 </script>
 </body>
 </html>
