@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>我的网球档案 · 让所有工具更懂你</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/profile.js"></script>
+<style>
+.ov{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:14px}
+.ov .cell{background:transparent;padding:13px 10px;text-align:center}
+.ov .n{font-family:var(--font-num);font-weight:800;font-size:26px;color:#fff;line-height:1}
+.ov .n small{font-size:14px;color:var(--on-court-dim)}
+.ov .l{font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--on-court-dim);margin-top:5px}
+.sect{margin:22px 0 10px;font-family:var(--font-display);font-weight:700;font-size:18px}
+.sect .u{font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-left:8px;font-weight:500;vertical-align:middle}
+.frow{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.frow label{font-size:13px;color:var(--ink-55);width:60px;flex:none}
+.frow input{flex:1;font-family:var(--font-ui);font-size:15px;padding:10px 12px;border:1px solid var(--ink-12);border-radius:10px;background:var(--paper);color:var(--ink)}
+.frow input:focus{outline:none;border-color:var(--accent)}
+.chips-sm{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.chips-sm .chip{padding:8px 13px;font-size:13px}
+.issue{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;background:var(--paper);border:1px solid var(--ink-08);border-radius:12px;margin-bottom:9px;box-shadow:var(--sh-1)}
+.issue .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--ink-20);flex:none;cursor:pointer;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}
+.issue.done .box{background:var(--ok);border-color:var(--ok)}
+.issue.done .tx{text-decoration:line-through;color:var(--ink-40)}
+.issue .tx{flex:1;font-size:13.5px;line-height:1.45}
+.issue .tx .src{font-family:var(--font-mono);font-size:9px;color:var(--ink-40);text-transform:uppercase}
+.issue .go{font-family:var(--font-mono);font-size:11px;color:var(--accent);text-decoration:none;flex:none;align-self:center}
+.ringwrap{display:flex;align-items:center;gap:14px}
+.ring{--p:0;width:54px;height:54px;border-radius:50%;flex:none;background:conic-gradient(var(--ball) calc(var(--p)*1%),rgba(255,255,255,.15) 0);display:grid;place-items:center}
+.ring i{width:42px;height:42px;border-radius:50%;background:var(--court-deep);display:grid;place-items:center;font-family:var(--font-num);font-weight:700;font-size:14px;color:#fff;font-style:normal}
+</style>
+</head>
+<body>
+<a href="../index.html" class="nav-home" title="工具箱">←</a>
+<div class="wrap">
+
+  <!-- ONBOARDING -->
+  <section class="view" id="v-onboard">
+    <div class="intro-top">
+      <div class="brandline"><span class="logo"></span>建立网球档案 · 30 秒</div>
+      <h1 class="hero">先认识<br>一下<span class="mark">你</span>。</h1>
+      <p class="sub">3 个问题就够，之后选拍、诊断、练习都会按你的情况来——越用越懂你。</p>
+      <div style="margin-top:22px">
+        <div class="frow" style="flex-direction:column;align-items:stretch;gap:8px"><label style="width:auto">你的主要目标</label><div class="chips-sm" id="ob-goal"></div></div>
+        <div class="frow" style="flex-direction:column;align-items:stretch;gap:8px"><label style="width:auto">你的水平</label><div class="chips-sm" id="ob-lvl"></div><div id="ob-lvl-desc" class="q-note" style="margin:0"></div></div>
+        <div class="frow" style="flex-direction:column;align-items:stretch;gap:8px"><label style="width:auto">惯用手</label><div class="chips-sm" id="ob-hand"></div></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="finishOnboard()"><span class="dot"></span>建好了，进我的档案</button>
+    <button class="btn-text" onclick="skipOnboard()">先跳过 →</button>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="view" id="v-dash">
+    <div class="brandline"><span class="logo"></span>我的网球档案 · Profile</div>
+    <div class="court-panel" style="margin-top:14px">
+      <div class="cc-eyebrow"><span>球员档案</span><span id="d-comp">完整度 0%</span></div>
+      <div class="ringwrap" style="margin-top:12px">
+        <div class="ring" id="d-ring"><i id="d-ntrp">—</i></div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:#fff" id="d-title">网球玩家</div>
+        <div class="cc-tag" id="d-sub">完善档案，解锁更准的推荐</div></div>
+      </div>
+      <div class="ov"><div class="cell"><div class="n" id="d-h">—</div><div class="l">身高cm</div></div><div class="cell"><div class="n" id="d-w">—</div><div class="l">体重kg</div></div><div class="cell"><div class="n" id="d-issues">0</div><div class="l">待改问题</div></div></div>
+    </div>
+
+    <div class="sect">待改进的问题 <span class="u">诊断/测评自动写入</span></div>
+    <div id="d-issuelist"></div>
+
+    <div class="sect">身体条件 <span class="u">用于选拍/发球建议</span></div>
+    <div class="frow"><label>身高</label><input id="f-h" type="number" inputmode="numeric" placeholder="cm" oninput="sf('body','height',this.value,true)"></div>
+    <div class="frow"><label>体重</label><input id="f-w" type="number" inputmode="numeric" placeholder="kg" oninput="sf('body','weight',this.value,true)"></div>
+    <div class="frow"><label>力量</label><div class="chips-sm" id="f-strength"></div></div>
+    <div class="frow"><label>伤病</label><div class="chips-sm" id="f-injury"></div></div>
+
+    <div class="sect">网球背景 <span class="u">用于测评/诊断/排课</span></div>
+    <div class="frow"><label>惯用手</label><div class="chips-sm" id="f-hand"></div></div>
+    <div class="frow"><label>反手</label><div class="chips-sm" id="f-bh"></div></div>
+    <div class="frow"><label>球龄</label><div class="chips-sm" id="f-years"></div></div>
+
+    <div class="sect">装备 <span class="u">用于"是否该换拍"</span></div>
+    <div class="frow"><label>在用拍</label><input id="f-racket" type="text" placeholder="品牌型号" oninput="sf('gear','racket',this.value)"></div>
+
+    <div class="sect">偏好 <span class="u">用于"像哪个球星"/练习样本</span></div>
+    <div class="frow" style="flex-direction:column;align-items:stretch;gap:8px"><label style="width:auto">喜欢的球星（多选）</label><div class="chips-sm" id="f-idols"></div></div>
+
+    <div class="actions">
+      <div class="btn-row"><button class="btn btn-court" onclick="go('../level/index.html')">去测段位</button><button class="btn btn-ghost" onclick="go('../swing/index.html')">去诊断挥拍</button></div>
+      <button class="btn-text" onclick="expimp()">导出 / 导入档案（换设备用）</button>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const GOALS=[['improve','提升水平'],['fix','纠正动作'],['basic','打好基础'],['compete','备赛'],['fit','健身'],['social','社交约球']];
+const LVLS=['1.5','2.0','2.5','3.0','3.5','4.0','4.5'];
+const HANDS=[['right','右手'],['left','左手']];
+const STRENGTH=[['weak','偏小'],['medium','中等'],['strong','大']];
+const INJ=[['none','无'],['elbow','网球肘'],['wrist','手腕'],['shoulder','肩'],['kneeback','腰/膝']];
+const BH=[['two','双反'],['one','单反'],['none','还不会']];
+const YEARS=[['<1y','<1年'],['1-3y','1-3年'],['3-5y','3-5年'],['5y+','5年+']];
+const IDOLS=[['federer','费德勒'],['nadal','纳达尔'],['djokovic','德约'],['alcaraz','阿尔卡拉斯'],['sinner','辛纳'],['zheng','郑钦文'],['serena','小威'],['murray','穆雷']];
+
+let ob={goal:null,lvl:null,hand:null};
+function chip(text,active){return '<button class="chip'+(active?' sel':'')+'">'+text+'</button>'}
+function fillChips(id,opts,val,cb,multi){const el=document.getElementById(id);el.innerHTML='';
+ opts.forEach(o=>{const[k,t]=Array.isArray(o)?o:[o,o];const on=multi?(val||[]).includes(k):val===k;
+  const b=document.createElement('button');b.className='chip'+(on?' sel':'');b.textContent=t;b.onclick=()=>cb(k);el.appendChild(b)})}
+
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
+// onboarding
+function initOnboard(){
+ fillChips('ob-goal',GOALS,ob.goal,k=>{ob.goal=k;initOnboard()});
+ fillChips('ob-lvl',LVLS,ob.lvl,k=>{ob.lvl=k;document.getElementById('ob-lvl-desc').textContent=(window.Profile?Profile.NTRP_DESC[k]:'')||'';initOnboard()});
+ fillChips('ob-hand',HANDS,ob.hand,k=>{ob.hand=k;initOnboard()});
+}
+function finishOnboard(){
+ if(window.Profile){const patch={goals:{},background:{}};
+  if(ob.goal)patch.goals.primary=ob.goal; if(ob.lvl)patch.background.ntrpSelf=parseFloat(ob.lvl); if(ob.hand)patch.background.handedness=ob.hand;
+  Profile.patch(patch);Profile.setOnboarded();}
+ renderDash();show('dash');
+}
+function skipOnboard(){if(window.Profile)Profile.setOnboarded();renderDash();show('dash')}
+
+// dashboard
+function sf(group,key,val,num){if(!window.Profile)return;const v=num?(val===''?null:+val):val;const o={};o[group]={};o[group][key]=v;Profile.patch(o);refreshOverview()}
+function toggleMulti(group,key,val){if(!window.Profile)return;const p=Profile.get();const arr=(p[group]&&p[group][key])||[];const i=arr.indexOf(val);
+ if(val==='none'){Profile.patch({[group]:{[key]:['none']}});} else {let na=arr.filter(x=>x!=='none');if(i>=0)na=na.filter(x=>x!==val);else na.push(val);const o={};o[group]={};o[group][key]=na;Profile.patch(o);}
+ renderDash()}
+function setField(group,key,val){const o={};o[group]={};o[group][key]=val;Profile.patch(o);renderDash()}
+
+function renderDash(){
+ const p=window.Profile?Profile.get():{body:{},background:{},gear:{},prefs:{},issues:[]};
+ // 概览
+ refreshOverview();
+ // 问题清单
+ const open=(p.issues||[]).filter(i=>i.status!=='resolved'),done=(p.issues||[]).filter(i=>i.status==='resolved');
+ const list=document.getElementById('d-issuelist');
+ const all=[...open,...done];
+ if(!all.length)list.innerHTML='<div class="empty" style="padding:18px"><p>还没有记录的问题。做一次<b>挥拍诊断</b>或<b>段位测评</b>，AI 会自动把短板写到这里 →</p></div>';
+ else list.innerHTML=all.map(it=>'<div class="issue'+(it.status==='resolved'?' done':'')+'"><div class="box" onclick="tg(\''+it.id+'\')">'+(it.status==='resolved'?'✓':'')+'</div><div class="tx">'+esc(it.desc)+' <span class="src">· '+({ai:'AI诊断',assess:'测评',self:'自评'}[it.source]||'')+'</span></div>'+(it.status!=='resolved'?'<a class="go" href="../practice/index.html">去练→</a>':'')+'</div>').join('');
+ // 字段回填
+ document.getElementById('f-h').value=p.body.height||'';
+ document.getElementById('f-w').value=p.body.weight||'';
+ document.getElementById('f-racket').value=p.gear.racket||'';
+ fillChips('f-strength',STRENGTH,p.body.strength,k=>setField('body','strength',k));
+ fillChips('f-injury',INJ,p.body.injuries||[],k=>toggleMulti('body','injuries',k),true);
+ fillChips('f-hand',HANDS,p.background.handedness,k=>setField('background','handedness',k));
+ fillChips('f-bh',BH,p.background.backhand,k=>setField('background','backhand',k));
+ fillChips('f-years',YEARS,p.background.playYears,k=>setField('background','playYears',k));
+ fillChips('f-idols',IDOLS,p.prefs.idols||[],k=>toggleMulti('prefs','idols',k),true);
+}
+function refreshOverview(){
+ const p=window.Profile?Profile.get():{body:{},background:{},issues:[]};
+ const ntrp=p.background.ntrpTested||p.background.ntrpSelf;
+ document.getElementById('d-ntrp').textContent=ntrp?ntrp.toFixed(1):'—';
+ document.getElementById('d-title').textContent=ntrp?('NTRP '+ntrp.toFixed(1)+' 选手'):'网球玩家';
+ document.getElementById('d-sub').textContent=p.background.handedness?({right:'右手',left:'左手'}[p.background.handedness]+' · '+(p.background.backhand?({two:'双反',one:'单反',none:'反手在学'}[p.background.backhand]):'反手未填')):'完善档案，解锁更准的推荐';
+ document.getElementById('d-h').textContent=p.body.height||'—';
+ document.getElementById('d-w').textContent=p.body.weight||'—';
+ const open=(p.issues||[]).filter(i=>i.status!=='resolved').length;
+ document.getElementById('d-issues').textContent=open;
+ const comp=Math.round((p._completeness||0)*100);
+ document.getElementById('d-comp').textContent='完整度 '+comp+'%';
+ document.getElementById('d-ring').style.setProperty('--p',comp);
+}
+function tg(id){if(window.Profile)Profile.resolveIssue(id);renderDash()}
+function esc(s){return(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+function go(u){location.href=u}
+function expimp(){const json=window.Profile?Profile.exportAll():'{}';
+ const blob=new Blob([json],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='网球档案备份.json';a.click();toast('已导出档案 JSON ✅ 换设备时可导入')}
+let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),3500)}
+
+// 启动
+(function(){const p=window.Profile?Profile.get():{_onboarded:false};
+ if(p._onboarded){renderDash();show('dash')}else{initOnboard();show('onboard')}})();
+</script>
+</body>
+</html>

@@ -3,11 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>AI 挥拍诊断 · 拆你的动作，告诉你差在哪</title>
+<title>AI 挥拍诊断 · 拆你的动作 · 你最像哪个球星</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/app.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../assets/profile.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+.star{margin:2px 0 16px;background:var(--court-soft);border:1px solid var(--court-line);border-radius:var(--r-md);padding:14px 15px}
+.star .srow{display:flex;align-items:baseline;gap:8px}
+.star .sk{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-40);width:54px;flex:none}
+.star .nm{font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--court-deep)}
+.star .pct{margin-left:auto;font-family:var(--font-num);font-weight:700;font-size:18px;color:var(--accent)}
+.star p{font-size:12.5px;color:var(--ink-70);line-height:1.5;margin:5px 0 0 54px}
+.star .gap{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--court-line);font-size:13px;color:var(--court-deep);font-weight:500;line-height:1.5}
+.dg .drill{color:var(--accent);font-size:12.5px;margin-top:5px;font-weight:500}
+.limit{margin-top:14px;font-size:11.5px;color:var(--ink-40);line-height:1.5;border-top:1px solid var(--ink-08);padding-top:12px}
+</style>
 </head>
 <body>
 <a href="../index.html" class="nav-home" title="工具箱">←</a>
@@ -16,39 +28,38 @@
   <section class="view on" id="v-intro">
     <div class="intro-top">
       <div class="brandline"><span class="logo"></span>AI 挥拍诊断 · Swing AI</div>
-      <h1 class="hero">AI 帮你<br>拆<span class="mark">挥拍</span>。</h1>
-      <p class="sub">上传一段挥拍视频，AI 在你的真实画面上标出骨架、关节角度和发力链，挑出毛病、告诉你怎么改。</p>
-      <div class="tips">📹 <b>怎么拍</b>：手机<b>横屏</b>、从<b>侧面</b>对着你、拍清全身，正手/发球都行，一两拍就够。</div>
+      <h1 class="hero">AI 拆你的<br><span class="mark">挥拍</span>。</h1>
+      <p class="sub">上传一段挥拍视频，AI 在你的真实画面上画骨架、关节角度、发力链，挑毛病、给你"最像哪个球星"。</p>
+      <div class="tips">📹 手机<b>横屏</b>、<b>侧面</b>对着你、拍清全身，正手/发球都行，一两拍就够。</div>
     </div>
     <input type="file" id="file" accept="video/*" style="display:none" onchange="onFile(event)">
     <button class="btn btn-primary" onclick="document.getElementById('file').click()"><span class="dot"></span>上传挥拍视频</button>
     <button class="btn-text" onclick="demo()">没视频？先看一份示例诊断 →</button>
-    <div class="intro-foot">视频只在你手机本地分析，不上传服务器 · 真实分析为实验功能，先看示例最稳</div>
+    <div class="intro-foot">视频只在手机本地分析 · 2D 侧拍能看动力链/击球点/节奏，旋转和拍面角度看不了(诚实标注)</div>
   </section>
 
   <section class="view" id="v-load">
     <div class="load-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-      <div class="spinner"></div>
-      <div class="load-t">正在拆解你的动作…</div>
-      <div class="load-s" id="load-s">加载 AI 模型</div>
+      <div class="spinner"></div><div class="load-t">正在拆解你的动作…</div><div class="load-s" id="load-s">加载 AI 模型</div>
     </div>
   </section>
 
   <section class="view" id="v-result">
     <div class="r-head"><div class="brandline"><span class="logo"></span>诊断完成 · Report</div><h2>你的挥拍诊断</h2></div>
-    <div class="card-stage"><div class="card grain" id="card">
+    <div class="card-stage"><div class="card" id="card">
       <div class="card-court">
         <div class="cc-eyebrow"><span id="cc-shot">AI 挥拍诊断 · 正手</span><span id="cc-frame">击球关键帧</span></div>
         <div class="cc-side">
-          <div class="cc-num" id="cc-num">76<small>/100</small><span class="ball"></span></div>
-          <div style="padding-bottom:14px"><div class="cc-grade" id="cc-grade">B · 进阶有戏</div><div class="cc-tag">动作完成度</div></div>
+          <div class="cc-num" id="cc-num">75<small>/100</small><span class="ball"></span></div>
+          <div style="padding-bottom:13px"><div class="cc-grade" id="cc-grade">B · 进阶有戏</div><div class="cc-tag">对标职业 · 动作完成度</div></div>
         </div>
-        <canvas id="cv" width="688" height="520" style="width:100%;margin-top:10px;border-radius:12px;display:block"></canvas>
-        <div class="cc-tag" style="text-align:center;margin-top:8px" id="cv-cap">骨架 · 关节角度 · 发力链（橙）</div>
+        <canvas id="cv" width="680" height="500" style="width:100%;margin-top:8px;border-radius:12px;display:block"></canvas>
+        <div class="cc-tag" id="cv-cap" style="text-align:center;margin-top:8px">骨架 · 关节角度 · 发力链(橙)</div>
       </div>
       <div class="card-pad">
-        <p class="c-quip" id="cc-vs">点评</p>
+        <div class="star" id="cc-star"></div>
         <div class="c-diags" id="cc-diags"></div>
+        <div class="limit" id="cc-limit">⚖ 2D 侧拍说明：动力链、屈膝、击球点位置、节奏可测；旋转、拍面开合、肩髋分离角需要 3D，本次未判定。</div>
         <div class="c-foot"><span class="badge"><span class="ball"></span>AI 挥拍诊断</span><span>@你的账号 · 2026</span></div>
       </div>
     </div></div>
@@ -58,129 +69,123 @@
         <button class="btn btn-court" onclick="go('../practice/index.html')">按毛病去练</button>
         <button class="btn btn-ghost" onclick="document.getElementById('file').click()">换段视频</button>
       </div>
-      <div class="hint">配「AI 把我的正手挑了 3 个毛病」发出来 👀</div>
+      <div class="hint">配「AI 说我打球像纳达尔，但该学辛纳」发出来 👀</div>
     </div>
   </section>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------- 示例 pose（归一化，正手击球侧身向右）---------- */
-const SAMPLE_POSE={ nose:[.50,.13], Lsh:[.43,.25], Rsh:[.54,.26], Lel:[.39,.35], Rel:[.66,.34],
- Lwr:[.35,.43], Rwr:[.77,.30], racket:[.86,.25], Lhip:[.45,.52], Rhip:[.53,.52],
- Lkn:[.42,.71], Rkn:[.56,.70], Lan:[.39,.91], Ran:[.58,.90] };
-const SAMPLE={ shot:'正手', score:76, grade:'B · 进阶有戏',
- angles:[{at:[.62,.40],t:'肘 142°',bad:false},{at:[.60,.74],t:'膝 158°',bad:false}],
- vs:'引拍和下盘已经有模有样，差的是击球点——同样一拍，高手在更高、更前的位置触球。',
- diag:[
-  {ok:true,t:'重心稳、屈膝屈髋到位',d:'击球前重心压得住，正手屈膝明显比反手大，底盘稳了发力才传得上去。'},
-  {ok:true,t:'盯球做得好',d:'眼睛凝视击球点、抬头滞后——这点很专业，头稳击球点才准。'},
-  {ok:false,t:'击球点偏低',d:'触球时手腕低于肩，借不到高度。试着在身体前上方、约肩高处击球。'},
-  {ok:false,t:'随挥收得早',d:'击球后拍子刹太早，力没送出去。让拍头加速包到对侧肩，别急着收。'},
- ]};
-
-/* ---------- 渲染：真实帧/球场底 + 骨架 + 力线 + 角度 ---------- */
-function calcAngle(a,b,c){const ba=[a[0]-b[0],a[1]-b[1]],bc=[c[0]-b[0],c[1]-b[1]];
- const d=ba[0]*bc[0]+ba[1]*bc[1],m=Math.hypot(...ba)*Math.hypot(...bc)||1;return Math.acos(Math.max(-1,Math.min(1,d/m)))*180/Math.PI}
-function arrow(ctx,x1,y1,x2,y2,col,w){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.lineCap='round';
- ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
- const a=Math.atan2(y2-y1,x2-x1),h=w*2.6;ctx.beginPath();ctx.moveTo(x2,y2);
- ctx.lineTo(x2-h*Math.cos(a-.4),y2-h*Math.sin(a-.4));ctx.lineTo(x2-h*Math.cos(a+.4),y2-h*Math.sin(a+.4));ctx.closePath();ctx.fill()}
-function drawCourtBg(ctx,W,H){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1F6B3B');g.addColorStop(1,'#123E22');
- ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1.5;
- ctx.strokeRect(W*.08,H*.1,W*.84,H*.82);ctx.beginPath();ctx.moveTo(W*.5,H*.1);ctx.lineTo(W*.5,H*.92);ctx.stroke();
- ctx.beginPath();ctx.moveTo(W*.08,H*.62);ctx.lineTo(W*.92,H*.62);ctx.stroke()}
-function renderPose(canvas,poseN,data,videoEl,t){
- const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
- ctx.clearRect(0,0,W,H);
- if(videoEl){ // 真实帧：等比铺满
-  const vr=videoEl.videoWidth/videoEl.videoHeight,cr=W/H;let dw,dh,dx,dy;
-  if(vr>cr){dh=H;dw=H*vr;dx=(W-dw)/2;dy=0}else{dw=W;dh=W/vr;dx=0;dy=(H-dh)/2}
-  try{ctx.drawImage(videoEl,dx,dy,dw,dh)}catch(e){drawCourtBg(ctx,W,H)}
-  ctx.fillStyle='rgba(10,30,16,.28)';ctx.fillRect(0,0,W,H);
- } else drawCourtBg(ctx,W,H);
- const P={};for(const k in poseN)P[k]=[poseN[k][0]*W,poseN[k][1]*H];
- // 骨架线
- const bones=[['nose','Rsh'],['Rsh','Lsh'],['Rsh','Rel'],['Rel','Rwr'],['Rwr','racket'],['Lsh','Lel'],['Lel','Lwr'],
-  ['Rsh','Rhip'],['Lsh','Lhip'],['Rhip','Lhip'],['Rhip','Rkn'],['Rkn','Ran'],['Lhip','Lkn'],['Lkn','Lan']];
- ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=4;ctx.lineCap='round';
- bones.forEach(([a,b])=>{if(P[a]&&P[b]){ctx.beginPath();ctx.moveTo(P[a][0],P[a][1]);ctx.lineTo(P[b][0],P[b][1]);ctx.stroke()}});
- // 球拍头
- if(P.racket){ctx.strokeStyle='#D14A24';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(P.racket[0],P.racket[1],15,20,-.5,0,7);ctx.stroke()}
- // 发力链橙箭头 踝→膝→髋→肩→肘→腕
- const chain=['Ran','Rkn','Rhip','Rsh','Rel','Rwr'];
- for(let i=0;i<chain.length-1;i++){const a=P[chain[i]],b=P[chain[i+1]];if(a&&b)arrow(ctx,a[0],a[1],b[0],b[1],'#FF7A2E',5)}
- // 关节点
- ctx.fillStyle='#D8FF3E';Object.keys(P).forEach(k=>{if(k==='racket')return;ctx.beginPath();ctx.arc(P[k][0],P[k][1],4.5,0,7);ctx.fill()});
- // 角度标注
- ctx.font='600 15px Geist, monospace';
- (data.angles||[]).forEach(m=>{const x=m.at[0]*W,y=m.at[1]*H;ctx.fillStyle=m.bad?'#FF7A2E':'#fff';
-  ctx.fillText(m.t,x,y)});
+/* 球星库（精简）：tags 用于匹配 */
+const STARS={
+ nadal:{n:'纳达尔',like:'极致上旋、底线进攻 + 顶级防守，套马索式正手。',bh:'two',h:185},
+ fed:{n:'费德勒',like:'流畅优雅、单反、靠落点和节奏赢球的技术流。',bh:'one',h:185},
+ djok:{n:'德约科维奇',like:'史上最强双反之一、弹性防守、接发顶级。',bh:'two',h:188},
+ sinner:{n:'辛纳',like:'高个贴地平击、上升点早借力、冷静自律。',bh:'two',h:191},
+ alcaraz:{n:'阿尔卡拉斯',like:'进攻全场 + 放小球 + 蛮力，变化极多。',bh:'two',h:183},
+ med:{n:'梅德韦杰夫',like:'站底线后方很远、超平借力、非常规打法。',bh:'two',h:198},
+ zheng:{n:'郑钦文',like:'力量型底线、大一发、女子顶级上旋。',bh:'two',h:178},
+ wawrinka:{n:'瓦林卡',like:'全巡回最重的暴力单反、身前击球、大发球。',bh:'one',h:183},
+ murray:{n:'穆雷',like:'防守反击、顶级移动和高吊球，把防守练成武器。',bh:'two',h:191}
+};
+function pickStars(ctx){ // ctx:{height,backhand,power,style}
+ const bh=ctx.backhand||'two', h=ctx.height||178;
+ let like;
+ if(bh==='one') like = h>=185?'fed':'wawrinka';
+ else if(ctx.style==='power'||ctx.style==='spin') like='nadal';
+ else if(h>=190) like='med';
+ else if(h>=183) like='sinner';
+ else like='alcaraz';
+ // 该学谁：身体处方
+ let learn,gap;
+ if(like==='nadal'){learn='sinner';gap='你打成了纳达尔的暴力上旋，但身体在喊辛纳——别死磕上旋，多练贴地平击、上升点早借力。'}
+ else if(h>=188){learn='med';gap='你这身高是借力的天赋，学梅德韦杰夫站后场、用超平击球先手，比硬造上旋省力。'}
+ else if(bh==='one'){learn='fed';gap='单反是你的特色，照费德勒练：击球点更靠前、转体带动、用落点而非蛮力。'}
+ else {learn='djok';gap='你的底子适合走德约路线：把相持稳定性和接发练成武器，先稳后狠。'}
+ return {like:STARS[like],learn:STARS[learn],gap,pct:82+Math.floor((h%7))};
 }
 
-/* ---------- 诊断卡填充 ---------- */
+/* 示例 pose（正手击球侧身向右，归一化） */
+const SAMPLE_POSE={nose:[.50,.13],Lsh:[.43,.25],Rsh:[.54,.26],Lel:[.39,.35],Rel:[.66,.34],Lwr:[.35,.43],Rwr:[.77,.30],racket:[.86,.25],Lhip:[.45,.52],Rhip:[.53,.52],Lkn:[.42,.71],Rkn:[.56,.70],Lan:[.39,.91],Ran:[.58,.90]};
+const SAMPLE={shot:'正手',score:75,grade:'B · 进阶有戏',
+ angles:[{at:[.62,.40],t:'肘 142°',bad:false},{at:[.60,.74],t:'膝 158°',bad:false}],
+ starCtx:{height:178,backhand:'two',style:'spin'},
+ diag:[
+  {ok:true,t:'重心稳、屈膝屈髋到位',d:'正手屈膝明显比反手大，底盘稳，发力才传得上来。',drill:''},
+  {ok:false,t:'你总在"够着打"，击球点偏低',d:'触球时手腕低于肩，借不到高度，被迫用手腕救拍面，容易飞。',drill:'▸ 练：来球一出手就喊方向当扳机，目标身前、约肩高处击球。'},
+  {ok:false,t:'随挥收太早，力没送出去',d:'拍头加速还没走完就收了，球软而短。',drill:'▸ 练：挥到对侧肩上方再停，跟着球走、别急刹。'},
+  {ok:false,t:'抬头滞后——但病根是身体先站起来了',d:'不是头抬早，是提前伸展(early extension)偷走了力量、把击球点顶高，打出软球。',drill:'▸ 练：想象从后脑到尾椎一根杆，绕它转，直到看见球飞走再抬头。'}
+ ]};
+
+function calcAngle(a,b,c){const ba=[a[0]-b[0],a[1]-b[1]],bc=[c[0]-b[0],c[1]-b[1]];const d=ba[0]*bc[0]+ba[1]*bc[1],m=Math.hypot(...ba)*Math.hypot(...bc)||1;return Math.acos(Math.max(-1,Math.min(1,d/m)))*180/Math.PI}
+function arrow(ctx,x1,y1,x2,y2,col,w){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();const a=Math.atan2(y2-y1,x2-x1),h=w*2.6;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-h*Math.cos(a-.4),y2-h*Math.sin(a-.4));ctx.lineTo(x2-h*Math.cos(a+.4),y2-h*Math.sin(a+.4));ctx.closePath();ctx.fill()}
+function courtBg(ctx,W,H){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1F6B3B');g.addColorStop(1,'#123E22');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1.5;ctx.strokeRect(W*.08,H*.1,W*.84,H*.82);ctx.beginPath();ctx.moveTo(W*.5,H*.1);ctx.lineTo(W*.5,H*.92);ctx.stroke();ctx.beginPath();ctx.moveTo(W*.08,H*.62);ctx.lineTo(W*.92,H*.62);ctx.stroke()}
+function renderPose(canvas,poseN,data,videoEl){
+ const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+ if(videoEl){const vr=videoEl.videoWidth/videoEl.videoHeight,cr=W/H;let dw,dh,dx,dy;if(vr>cr){dh=H;dw=H*vr;dx=(W-dw)/2;dy=0}else{dw=W;dh=W/vr;dx=0;dy=(H-dh)/2}try{ctx.drawImage(videoEl,dx,dy,dw,dh)}catch(e){courtBg(ctx,W,H)}ctx.fillStyle='rgba(10,30,16,.3)';ctx.fillRect(0,0,W,H)}else courtBg(ctx,W,H);
+ const P={};for(const k in poseN)P[k]=[poseN[k][0]*W,poseN[k][1]*H];
+ const bones=[['nose','Rsh'],['Rsh','Lsh'],['Rsh','Rel'],['Rel','Rwr'],['Rwr','racket'],['Lsh','Lel'],['Lel','Lwr'],['Rsh','Rhip'],['Lsh','Lhip'],['Rhip','Lhip'],['Rhip','Rkn'],['Rkn','Ran'],['Lhip','Lkn'],['Lkn','Lan']];
+ ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=4;ctx.lineCap='round';
+ bones.forEach(([a,b])=>{if(P[a]&&P[b]){ctx.beginPath();ctx.moveTo(P[a][0],P[a][1]);ctx.lineTo(P[b][0],P[b][1]);ctx.stroke()}});
+ if(P.racket){ctx.strokeStyle='#E14E2A';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(P.racket[0],P.racket[1],15,20,-.5,0,7);ctx.stroke()}
+ const chain=['Ran','Rkn','Rhip','Rsh','Rel','Rwr'];for(let i=0;i<chain.length-1;i++){const a=P[chain[i]],b=P[chain[i+1]];if(a&&b)arrow(ctx,a[0],a[1],b[0],b[1],'#FF7A2E',5)}
+ ctx.fillStyle='#CBFF35';Object.keys(P).forEach(k=>{if(k==='racket')return;ctx.beginPath();ctx.arc(P[k][0],P[k][1],4.5,0,7);ctx.fill()});
+ ctx.font='700 15px Archivo, sans-serif';(data.angles||[]).forEach(m=>{ctx.fillStyle=m.bad?'#FF7A2E':'#fff';ctx.fillText(m.t,m.at[0]*W,m.at[1]*H)});
+}
 function paint(data,videoEl){
  document.getElementById('cc-shot').textContent='AI 挥拍诊断 · '+data.shot;
  document.getElementById('cc-num').innerHTML=data.score+'<small>/100</small><span class="ball"></span>';
  document.getElementById('cc-grade').textContent=data.grade;
- document.getElementById('cc-vs').textContent=data.vs;
- document.getElementById('cc-diags').innerHTML=data.diag.map(x=>'<div class="dg '+(x.ok?'ok':'no')+'"><div class="ic">'+(x.ok?'✓':'!')+'</div><div class="tx"><h4>'+x.t+'</h4><p>'+x.d+'</p></div></div>').join('');
+ const s=pickStars(data.starCtx||{});
+ document.getElementById('cc-star').innerHTML='<div class="srow"><span class="sk">你最像</span><span class="nm">'+s.like.n+'</span><span class="pct">'+s.pct+'%</span></div><p>'+s.like.like+'</p><div class="srow" style="margin-top:10px"><span class="sk">最该学</span><span class="nm">'+s.learn.n+'</span></div><p class="gap">'+s.gap+'</p>';
+ document.getElementById('cc-diags').innerHTML=data.diag.map(x=>'<div class="dg '+(x.ok?'ok':'no')+'"><div class="ic">'+(x.ok?'✓':'!')+'</div><div class="tx"><h4>'+x.t+'</h4><p>'+x.d+'</p>'+(x.drill?'<p class="drill">'+x.drill+'</p>':'')+'</div></div>').join('');
  document.getElementById('cv-cap').textContent=videoEl?'你的真实画面 · 骨架/角度/发力链(橙)':'示例 · 上传后骨架会叠在你的真实画面上';
  renderPose(document.getElementById('cv'),data.pose,data,videoEl);
+ // 回写问题清单
+ if(window.Profile){try{data.diag.filter(x=>!x.ok).slice(0,3).forEach(x=>Profile.addIssue({area:data.shot,desc:'挥拍诊断：'+x.t,severity:'mid',source:'ai'}));}catch(e){}}
  show('result');
 }
 function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
 function demo(){show('load');fake(()=>paint({...SAMPLE,pose:SAMPLE_POSE},null))}
-function fake(done){const s=['加载 AI 模型…','逐帧追踪你的骨架…','定位击球关键帧…','计算关节角度…','生成诊断…'];let i=0;
- const el=document.getElementById('load-s');const t=setInterval(()=>{el.textContent=s[i++];if(i>=s.length){clearInterval(t);setTimeout(done,500)}},500)}
+function fake(done){const s=['加载 AI 模型…','逐帧追踪你的骨架…','定位击球关键帧…','计算关节角度…','对标职业、生成诊断…'];let i=0;const el=document.getElementById('load-s');const t=setInterval(()=>{el.textContent=s[i++];if(i>=s.length){clearInterval(t);setTimeout(done,500)}},480)}
 
-/* ---------- 真实视频分析（实验性，纯前端 MediaPipe）---------- */
-function buildDiag(P){ // P 归一化点
- const knee=calcAngle(P.Rhip,P.Rkn,P.Ran), elbow=calcAngle(P.Rsh,P.Rel,P.Rwr);
- const contactLow=P.Rwr[1]>P.Rsh[1]+.02, contactFront=P.Rwr[0]>P.Ran[0];
- let score=66;const diag=[];
- if(knee<172){score+=10;diag.push({ok:true,t:'下盘有屈膝，重心稳',d:'膝盖约 '+Math.round(knee)+'°，发力有根。'})}
- else diag.push({ok:false,t:'屈膝不够',d:'腿伸太直（'+Math.round(knee)+'°），击球前多沉一点、像坐板凳那样屈膝。'});
- if(!contactLow){score+=10;diag.push({ok:true,t:'击球点高度合理',d:'触球点在肩附近，借得上力。'})}
- else diag.push({ok:false,t:'击球点偏低',d:'触球时手腕低于肩，借不到高度。试着在肩高、身前击球。'});
- if(contactFront){score+=8;diag.push({ok:true,t:'击球点在身前',d:'迎球到位，拍柄能指向来球。'})}
- else diag.push({ok:false,t:'击球点偏后',d:'总在身体侧面才碰球（晚了），往身前一点迎球。'});
- if(elbow>150||(elbow>100&&elbow<125)) {score+=6;diag.push({ok:true,t:'手臂角度稳定',d:'肘角 '+Math.round(elbow)+'°，直臂曲臂都行，关键是稳定。'})}
- else diag.push({ok:false,t:'手臂角度偏乱',d:'击球肘角 '+Math.round(elbow)+'°，固定一个你舒服的角度，稳定优先。'});
- score=Math.max(40,Math.min(96,score));
- const bad=diag.filter(d=>!d.ok).length;
- return {shot:'挥拍',score,grade:score>=85?'A · 有内味了':score>=72?'B · 进阶有戏':'C · 打好基础',
-  vs:'AI 看了你这一拍——'+(bad?'毛病不致命，改了立刻不一样。':'底子不错，继续磨。'),
-  pose:P, angles:[{at:[P.Rel[0]+.02,P.Rel[1]+.02],t:'肘 '+Math.round(elbow)+'°',bad:elbow<100},{at:[P.Rkn[0]+.02,P.Rkn[1]+.02],t:'膝 '+Math.round(knee)+'°',bad:knee>=172}],diag};
+function buildDiag(P,prof){
+ const knee=calcAngle(P.Rhip,P.Rkn,P.Ran),elbow=calcAngle(P.Rsh,P.Rel,P.Rwr);
+ const low=P.Rwr[1]>P.Rsh[1]+.02,front=P.Rwr[0]>P.Ran[0];
+ // 五维(对标职业)→加权总分
+ const m={chain:knee<172?80:55,contact:(!low?78:52)*.5+(front?78:55)*.5,posture:knee<172?80:60,follow:62,head:72};
+ const score=Math.round(m.chain*.3+m.contact*.25+m.posture*.2+m.follow*.15+m.head*.1);
+ const diag=[];
+ if(knee<172)diag.push({ok:true,t:'下盘有屈膝、重心稳',d:'膝盖约 '+Math.round(knee)+'°，底盘稳，发力链有根。',drill:''});
+ else diag.push({ok:false,t:'屈膝不够、用手打球',d:'腿太直('+Math.round(knee)+'°)，发力一半本该来自腿髋，你跳过了。',drill:'▸ 练：击球前像坐板凳屈膝，蹬到触球用七成劲。'});
+ if(low)diag.push({ok:false,t:'你总在"够着打"，击球点偏低',d:'手腕低于肩，借不到高度，被迫用手腕救拍面、易飞。',drill:'▸ 练：来球出手就喊方向，目标身前、约肩高击球。'});
+ else diag.push({ok:true,t:'击球点高度合理',d:'触球在肩附近，借得上力。',drill:''});
+ if(!front)diag.push({ok:false,t:'击球点偏后',d:'总在身体侧后方才碰球(晚了)，拍柄没能指向来球。',drill:'▸ 练：迎前一点，在前髋之前触球。'});
+ diag.push({ok:false,t:'随挥/收拍可以更完整',d:'2D 看收拍偏早，力没完全送出。',drill:'▸ 练：挥到对侧肩上方再停，跟着球走。'});
+ const ctx={height:(prof&&prof.body&&prof.body.height)||178,backhand:(prof&&prof.background&&prof.background.backhand)||'two',style:knee<172?'spin':'all'};
+ return {shot:'挥拍',score:Math.max(45,Math.min(94,score)),grade:score>=85?'A · 有内味了':score>=72?'B · 进阶有戏':'C · 打好基础',
+  starCtx:ctx,pose:P,angles:[{at:[P.Rel[0]+.02,P.Rel[1]+.02],t:'肘 '+Math.round(elbow)+'°',bad:elbow<100},{at:[P.Rkn[0]+.02,P.Rkn[1]+.02],t:'膝 '+Math.round(knee)+'°',bad:knee>=172}],diag};
 }
 async function onFile(e){
- const file=e.target.files&&e.target.files[0];if(!file)return;
- show('load');const s=document.getElementById('load-s');s.textContent='加载 AI 模型…';
+ const file=e.target.files&&e.target.files[0];if(!file)return;show('load');const s=document.getElementById('load-s');s.textContent='加载 AI 模型…';
  try{
   const vis=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/vision_bundle.mjs');
   const fs=await vis.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/wasm');
   const pl=await vis.PoseLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'},runningMode:'VIDEO',numPoses:1});
   s.textContent='逐帧追踪你的骨架…';
-  const v=document.createElement('video');v.src=URL.createObjectURL(file);v.muted=true;v.playsInline=true;
-  await new Promise(r=>{v.onloadeddata=r});
+  const v=document.createElement('video');v.src=URL.createObjectURL(file);v.muted=true;v.playsInline=true;await new Promise(r=>{v.onloadeddata=r});
   const dur=Math.min(v.duration||2,5),N=28;let best=null;
-  for(let i=0;i<N;i++){const t=dur*i/N;v.currentTime=t;await new Promise(r=>{v.onseeked=r});
-   const res=pl.detectForVideo(v,performance.now());
-   if(res.landmarks&&res.landmarks[0]){const L=res.landmarks[0];if(!best||L[16].x>best.x){best={x:L[16].x,L,t}}}}
+  for(let i=0;i<N;i++){const t=dur*i/N;v.currentTime=t;await new Promise(r=>{v.onseeked=r});const res=pl.detectForVideo(v,performance.now());if(res.landmarks&&res.landmarks[0]){const L=res.landmarks[0];if(!best||L[16].x>best.x)best={x:L[16].x,L,t}}}
   if(!best)throw new Error('no pose');
-  s.textContent='计算关节角度…';
-  v.currentTime=best.t;await new Promise(r=>{v.onseeked=r});
-  const L=best.L,P={nose:[L[0].x,L[0].y],Lsh:[L[11].x,L[11].y],Rsh:[L[12].x,L[12].y],Lel:[L[13].x,L[13].y],Rel:[L[14].x,L[14].y],
-   Lwr:[L[15].x,L[15].y],Rwr:[L[16].x,L[16].y],racket:[L[16].x+.08,L[16].y-.05],Lhip:[L[23].x,L[23].y],Rhip:[L[24].x,L[24].y],
-   Lkn:[L[25].x,L[25].y],Rkn:[L[26].x,L[26].y],Lan:[L[27].x,L[27].y],Ran:[L[28].x,L[28].y]};
-  const data=buildDiag(P);pl.close();paint(data,v);
+  s.textContent='对标职业、计算角度…';v.currentTime=best.t;await new Promise(r=>{v.onseeked=r});
+  const L=best.L,P={nose:[L[0].x,L[0].y],Lsh:[L[11].x,L[11].y],Rsh:[L[12].x,L[12].y],Lel:[L[13].x,L[13].y],Rel:[L[14].x,L[14].y],Lwr:[L[15].x,L[15].y],Rwr:[L[16].x,L[16].y],racket:[L[16].x+.08,L[16].y-.05],Lhip:[L[23].x,L[23].y],Rhip:[L[24].x,L[24].y],Lkn:[L[25].x,L[25].y],Rkn:[L[26].x,L[26].y],Lan:[L[27].x,L[27].y],Ran:[L[28].x,L[28].y]};
+  const prof=window.Profile?Profile.get():null;const data=buildDiag(P,prof);pl.close();paint(data,v);
  }catch(err){console.error(err);show('intro');toast('真机分析没跑起来 😅 可能是网络/视频格式。先<b>看示例诊断</b>，或换段清晰横屏视频。')}
 }
 function go(u){location.href=u}
 let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4800)}
 async function dl(){if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
- try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});
-  const a=document.createElement('a');a.download='挥拍诊断卡.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
+ try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});const a=document.createElement('a');a.download='挥拍诊断卡.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
 </script>
 </body>
 </html>

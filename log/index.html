@@ -5,31 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>网球打卡与笔记 · 记录你的进步</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/app.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../assets/profile.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-.ov{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:16px}
-.ov .cell{background:transparent;padding:14px 12px;text-align:center}
-.ov .n{font-family:var(--font-display);font-size:34px;line-height:1;color:#fff}
-.ov .l{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--on-court-dim);margin-top:6px}
-.tabs{display:flex;gap:8px;margin:22px 0 14px}
+.ov{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:14px}
+.ov .cell{background:transparent;padding:14px 10px;text-align:center}
+.ov .n{font-family:var(--font-num);font-weight:800;font-size:32px;color:#fff;line-height:1}
+.ov .l{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--on-court-dim);margin-top:6px}
+.tabs{display:flex;gap:8px;margin:20px 0 14px}
 .tab{flex:1;text-align:center;padding:11px;border-radius:10px;font-size:14px;cursor:pointer;background:var(--paper);border:1px solid var(--ink-08);color:var(--ink-55)}
 .tab.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
-.entry{background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh-whisper)}
+.entry{background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh-1)}
 .entry .top{display:flex;justify-content:space-between;align-items:baseline}
 .entry .date{font-family:var(--font-mono);font-size:12px;color:var(--ink-55)}
 .entry .res{font-family:var(--font-mono);font-size:11px;padding:3px 9px;border-radius:999px}
 .entry .res.win{background:var(--ok-soft);color:var(--ok)}.entry .res.lose{background:var(--accent-soft);color:var(--accent)}.entry .res.practice{background:var(--ink-08);color:var(--ink-55)}
 .entry .meta{font-size:13px;color:var(--ink-70);margin-top:6px}
 .entry .note{font-size:13px;color:var(--ink-55);margin-top:6px;font-style:italic;line-height:1.5}
-.issue{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;background:var(--paper);border:1px solid var(--ink-08);border-radius:12px;margin-bottom:9px;box-shadow:var(--sh-whisper)}
+.issue{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;background:var(--paper);border:1px solid var(--ink-08);border-radius:12px;margin-bottom:9px;box-shadow:var(--sh-1)}
 .issue .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--ink-20);flex:none;cursor:pointer;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}
 .issue.done .box{background:var(--ok);border-color:var(--ok)}
 .issue.done .tx{text-decoration:line-through;color:var(--ink-40)}
-.issue .tx{font-size:14px;line-height:1.5}
-.addrow{display:flex;gap:8px;margin-bottom:10px}
-.addrow input{flex:1}
+.issue .tx{font-size:14px;line-height:1.5}.issue .tx .src{font-family:var(--font-mono);font-size:9px;color:var(--ink-40)}
+.addrow{display:flex;gap:8px;margin-bottom:10px}.addrow input{flex:1}
 </style>
 </head>
 <body>
@@ -38,16 +38,12 @@
 
   <section class="view on" id="v-home">
     <div class="brandline"><span class="logo"></span>打卡与笔记 · Log</div>
-    <h1 class="hero" style="font-size:44px;margin-top:10px">我的<span class="mark">网球本</span></h1>
-    <div class="court-panel" style="margin-top:18px">
-      <div class="cc-eyebrow"><span>本月概览</span><span id="ov-streak">—</span></div>
-      <div class="ov">
-        <div class="cell"><div class="n" id="ov-month">0</div><div class="l">本月次数</div></div>
-        <div class="cell"><div class="n" id="ov-total">0</div><div class="l">累计次数</div></div>
-        <div class="cell"><div class="n" id="ov-hours">0</div><div class="l">累计小时</div></div>
-      </div>
+    <h1 class="hero" style="font-size:42px;margin-top:10px">我的<span class="mark">网球本</span></h1>
+    <div class="court-panel" style="margin-top:16px">
+      <div class="cc-eyebrow"><span id="ov-lv">本月概览</span><span id="ov-streak">—</span></div>
+      <div class="ov"><div class="cell"><div class="n" id="ov-month">0</div><div class="l">本月次数</div></div><div class="cell"><div class="n" id="ov-total">0</div><div class="l">累计次数</div></div><div class="cell"><div class="n" id="ov-hours">0</div><div class="l">累计小时</div></div></div>
     </div>
-    <div class="actions" style="margin-top:18px">
+    <div class="actions" style="margin-top:16px">
       <button class="btn btn-primary" onclick="openAdd()"><span class="dot"></span>＋ 记一次打球</button>
       <div class="btn-row"><button class="btn btn-court" onclick="wrap()">看年度回顾</button><button class="btn btn-ghost" onclick="go('../swing/index.html')">去诊断挥拍</button></div>
     </div>
@@ -61,26 +57,25 @@
 
   <section class="view" id="v-add">
     <div class="brandline"><span class="logo"></span>记一次打球</div>
-    <h1 class="hero" style="font-size:40px;margin:10px 0 20px">今天打得<span class="mark">怎么样</span>？</h1>
+    <h1 class="hero" style="font-size:38px;margin:10px 0 18px">今天打得<span class="mark">怎么样</span>？</h1>
     <div class="field-row"><div class="field"><label>日期</label><input id="f-date" type="date"></div><div class="field"><label>时长（分钟）</label><input id="f-mins" type="number" inputmode="numeric" value="90" min="0"></div></div>
     <div class="field"><label>和谁打 / 在哪</label><input id="f-rival" type="text" placeholder="如：老王 · 徐汇某馆" maxlength="20"></div>
     <div class="field"><label>结果</label><div class="chips" id="f-res"><button class="chip sel" data-v="practice">练球</button><button class="chip" data-v="win">赢了</button><button class="chip" data-v="lose">输了</button></div></div>
     <div class="field"><label>今天的感受 / 遇到的问题</label><textarea id="f-note" rows="3" placeholder="如：正手手感不错，但反手一上来就崩，二发太软被打" maxlength="120"></textarea></div>
-    <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="document.getElementById('f-toiss').checked=!document.getElementById('f-toiss').checked"><input type="checkbox" id="f-toiss" style="width:auto" checked> 把感受里的问题也加进"问题清单"追踪</label></div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="f-toiss" style="width:auto" checked> 把问题也加进"问题清单"追踪</label></div>
     <div class="actions"><button class="btn btn-primary" onclick="saveEntry()"><span class="dot"></span>保存这次打卡</button><button class="btn btn-ghost" onclick="show('home')">取消</button></div>
   </section>
 
   <section class="view" id="v-wrap">
     <div class="r-head"><div class="brandline"><span class="logo"></span>年度回顾 · Wrapped</div><h2>你的网球战报</h2></div>
-    <div class="card-stage"><div class="card grain" id="card">
+    <div class="card-stage"><div class="card" id="card">
       <div class="card-court">
         <div class="cc-eyebrow"><span>网球年度回顾</span><span id="w-year">2026</span></div>
         <div class="cc-side"><div class="cc-num" id="w-games">0<small>场</small><span class="ball"></span></div>
-          <div style="padding-bottom:14px"><div class="cc-grade" id="w-wl">0胜 0负</div><div class="cc-tag" id="w-hours">0 小时</div></div></div>
+          <div style="padding-bottom:13px"><div class="cc-grade" id="w-wl">0胜 0负</div><div class="cc-tag" id="w-hours">0 小时</div></div></div>
         <div class="ov" style="margin-top:18px"><div class="cell"><div class="n" id="w-rate">—</div><div class="l">胜率</div></div><div class="cell"><div class="n" id="w-streak">0</div><div class="l">最长连胜</div></div><div class="cell"><div class="n" id="w-fixed">0</div><div class="l">改掉的问题</div></div></div>
       </div>
-      <div class="card-pad"><p class="c-quip" id="w-quip">回顾点评</p>
-        <div class="c-foot"><span class="badge"><span class="ball"></span>网球打卡 · 年度回顾</span><span>@你的账号</span></div></div>
+      <div class="card-pad"><p class="c-quip" id="w-quip">回顾点评</p><div class="c-foot"><span class="badge"><span class="ball"></span>网球打卡 · 年度回顾</span><span>@你的账号</span></div></div>
     </div></div>
     <div class="actions"><button class="btn btn-primary" onclick="dl()"><span class="dot"></span>保存年度回顾 · 发小红书</button><button class="btn btn-ghost" onclick="show('home')">返回</button></div>
   </section>
@@ -88,68 +83,56 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let entries=[],issues=[];
-function load(){try{entries=JSON.parse(localStorage.getItem('tn_log')||'[]');issues=JSON.parse(localStorage.getItem('tn_iss')||'[]')}catch(e){entries=[];issues=[]}}
-function persist(){localStorage.setItem('tn_log',JSON.stringify(entries));localStorage.setItem('tn_iss',JSON.stringify(issues))}
+const P=window.Profile;
+function entries(){return P?P.getLog('checkin'):[]}
+function setEntries(a){localStorage.setItem('tn_log',JSON.stringify(a))}
 function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
 function go(u){location.href=u}
-function openAdd(){const d=new Date();document.getElementById('f-date').value=d.toISOString().slice(0,10);
- document.getElementById('f-mins').value=90;document.getElementById('f-rival').value='';document.getElementById('f-note').value='';
- document.querySelectorAll('#f-res .chip').forEach((c,i)=>c.classList.toggle('sel',i===0));resSel='practice';show('add')}
 let resSel='practice';
-document.querySelectorAll('#f-res .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#f-res .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');resSel=c.dataset.v});
-function saveEntry(){const e={date:document.getElementById('f-date').value||new Date().toISOString().slice(0,10),
-  mins:+document.getElementById('f-mins').value||0,rival:document.getElementById('f-rival').value.trim(),
-  result:resSel,note:document.getElementById('f-note').value.trim()};
- entries.unshift(e);
- if(document.getElementById('f-toiss').checked&&e.note){issues.unshift({text:e.note,done:false})}
- persist();renderHome();show('home');toast('打卡成功 ✅')}
-function tab(t){document.getElementById('tab-log').classList.toggle('on',t==='log');document.getElementById('tab-iss').classList.toggle('on',t==='iss');
- document.getElementById('pane-log').style.display=t==='log'?'block':'none';document.getElementById('pane-iss').style.display=t==='iss'?'block':'none'}
-function addIssue(){const t=document.getElementById('newissue').value.trim();if(!t)return;issues.unshift({text:t,done:false});document.getElementById('newissue').value='';persist();renderIss()}
-function toggleIssue(i){issues[i].done=!issues[i].done;persist();renderIss()}
-function renderHome(){
- const now=new Date(),ym=now.toISOString().slice(0,7);
- const month=entries.filter(e=>e.date&&e.date.slice(0,7)===ym).length;
- const hours=Math.round(entries.reduce((s,e)=>s+(e.mins||0),0)/60);
- document.getElementById('ov-month').textContent=month;
- document.getElementById('ov-total').textContent=entries.length;
- document.getElementById('ov-hours').textContent=hours;
- document.getElementById('ov-streak').textContent=entries.length?'已记 '+entries.length+' 次':'还没开始记';
- const pl=document.getElementById('pane-log');
- if(!entries.length){pl.innerHTML='<div class="empty"><h3>还没有记录</h3><p>打完球点上面"记一次打球"，攒起来就有年度回顾了 🎾</p></div>'}
- else pl.innerHTML=entries.map(e=>{const r={win:'赢了',lose:'输了',practice:'练球'}[e.result]||'练球';
-  return '<div class="entry"><div class="top"><span class="date">'+e.date+(e.mins?' · '+e.mins+'min':'')+'</span><span class="res '+e.result+'">'+r+'</span></div>'+(e.rival?'<div class="meta">🆚 '+esc(e.rival)+'</div>':'')+(e.note?'<div class="note">"'+esc(e.note)+'"</div>':'')+'</div>'}).join('');
- renderIss();
+function openAdd(){const d=new Date();document.getElementById('f-date').value=d.toISOString().slice(0,10);document.getElementById('f-mins').value=90;document.getElementById('f-rival').value='';document.getElementById('f-note').value='';document.querySelectorAll('#f-res .chip').forEach((c,i)=>c.classList.toggle('sel',i===0));resSel='practice';show('add')}
+function saveEntry(){const e={date:document.getElementById('f-date').value||new Date().toISOString().slice(0,10),mins:+document.getElementById('f-mins').value||0,rival:document.getElementById('f-rival').value.trim(),result:resSel,note:document.getElementById('f-note').value.trim()};
+ if(P)P.pushLog('checkin',e);
+ if(document.getElementById('f-toiss').checked&&e.note&&P){P.addIssue({area:'打球笔记',desc:e.note,severity:'low',source:'self'})}
+ renderHome();show('home');toast('打卡成功 ✅')}
+function tab(t){document.getElementById('tab-log').classList.toggle('on',t==='log');document.getElementById('tab-iss').classList.toggle('on',t==='iss');document.getElementById('pane-log').style.display=t==='log'?'block':'none';document.getElementById('pane-iss').style.display=t==='iss'?'block':'none'}
+function addIssue(){const t=document.getElementById('newissue').value.trim();if(!t||!P)return;P.addIssue({area:'手记',desc:t,severity:'mid',source:'self'});document.getElementById('newissue').value='';renderIss()}
+function tg(id){if(P)P.resolveIssue(id);renderIss();refreshOv()}
+function refreshOv(){
+ const es=entries(),now=new Date(),ym=now.toISOString().slice(0,7);
+ document.getElementById('ov-month').textContent=es.filter(e=>e.date&&e.date.slice(0,7)===ym).length;
+ document.getElementById('ov-total').textContent=es.length;
+ document.getElementById('ov-hours').textContent=Math.round(es.reduce((s,e)=>s+(e.mins||0),0)/60);
+ document.getElementById('ov-streak').textContent=es.length?'已记 '+es.length+' 次':'还没开始记';
+ const p=P?P.get():null,ntrp=p&&p.background&&(p.background.ntrpTested||p.background.ntrpSelf);
+ document.getElementById('ov-lv').textContent=ntrp?('NTRP '+ntrp.toFixed(1)+' · 本月'):'本月概览';
 }
-function renderIss(){const el=document.getElementById('iss-list');
- if(!issues.length){el.innerHTML='<div class="empty"><h3>问题清单是空的</h3><p>记下要改的毛病（或从挥拍诊断抄过来），改掉一个勾掉一个 ✅</p></div>';return}
- el.innerHTML=issues.map((x,i)=>'<div class="issue'+(x.done?' done':'')+'"><div class="box" onclick="toggleIssue('+i+')">'+(x.done?'✓':'')+'</div><div class="tx">'+esc(x.text)+'</div></div>').join('')}
-function esc(s){return (s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
-function wrap(){
- const g=entries.length,w=entries.filter(e=>e.result==='win').length,l=entries.filter(e=>e.result==='lose').length;
- const decided=w+l,rate=decided?Math.round(w/decided*100):0,hours=Math.round(entries.reduce((s,e)=>s+(e.mins||0),0)/60);
- const fixed=issues.filter(x=>x.done).length;
- // 最长连胜
- let streak=0,mx=0;[...entries].reverse().forEach(e=>{if(e.result==='win'){streak++;mx=Math.max(mx,streak)}else if(e.result==='lose')streak=0});
+function renderHome(){refreshOv();
+ const es=entries(),pl=document.getElementById('pane-log');
+ if(!es.length)pl.innerHTML='<div class="empty"><h3>还没有记录</h3><p>打完球点上面"记一次打球"，攒起来就有年度回顾了 🎾</p></div>';
+ else pl.innerHTML=es.map(e=>{const r={win:'赢了',lose:'输了',practice:'练球'}[e.result]||'练球';return '<div class="entry"><div class="top"><span class="date">'+e.date+(e.mins?' · '+e.mins+'min':'')+'</span><span class="res '+e.result+'">'+r+'</span></div>'+(e.rival?'<div class="meta">🆚 '+esc(e.rival)+'</div>':'')+(e.note?'<div class="note">"'+esc(e.note)+'"</div>':'')+'</div>'}).join('');
+ renderIss()}
+function renderIss(){const el=document.getElementById('iss-list');const all=P?P.get().issues:[];
+ if(!all.length){el.innerHTML='<div class="empty"><h3>问题清单是空的</h3><p>记下要改的毛病，或从挥拍诊断/段位测评自动同步过来 ✅</p></div>';return}
+ const sorted=[...all].sort((a,b)=>(a.status==='resolved')-(b.status==='resolved'));
+ el.innerHTML=sorted.map(x=>'<div class="issue'+(x.status==='resolved'?' done':'')+'"><div class="box" onclick="tg(\''+x.id+'\')">'+(x.status==='resolved'?'✓':'')+'</div><div class="tx">'+esc(x.desc)+' <span class="src">· '+({ai:'AI诊断',assess:'测评',self:'手记'}[x.source]||'')+'</span></div></div>').join('')}
+function esc(s){return(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+function wrap(){const es=entries(),g=es.length,w=es.filter(e=>e.result==='win').length,l=es.filter(e=>e.result==='lose').length;
+ const dec=w+l,rate=dec?Math.round(w/dec*100):0,hours=Math.round(es.reduce((s,e)=>s+(e.mins||0),0)/60);
+ const fixed=P?P.get().issues.filter(x=>x.status==='resolved').length:0;
+ let streak=0,mx=0;[...es].reverse().forEach(e=>{if(e.result==='win'){streak++;mx=Math.max(mx,streak)}else if(e.result==='lose')streak=0});
  document.getElementById('w-games').innerHTML=g+'<small>场</small><span class="ball"></span>';
- document.getElementById('w-wl').textContent=w+'胜 '+l+'负';
- document.getElementById('w-hours').textContent=hours+' 小时';
- document.getElementById('w-rate').textContent=decided?rate+'%':'—';
- document.getElementById('w-streak').textContent=mx;
- document.getElementById('w-fixed').textContent=fixed;
+ document.getElementById('w-wl').textContent=w+'胜 '+l+'负';document.getElementById('w-hours').textContent=hours+' 小时';
+ document.getElementById('w-rate').textContent=dec?rate+'%':'—';document.getElementById('w-streak').textContent=mx;document.getElementById('w-fixed').textContent=fixed;
  let q;if(!g)q='还没有打卡记录——打完球记一笔，年底这里就有你的网球战报了。';
  else if(rate>=60)q='这胜率，今年你是真打人。一共 '+hours+' 小时泡在球场，比上班还勤。';
- else if(decided)q='有来有回，'+g+' 场打下来球龄又厚了一截。改掉了 '+fixed+' 个老毛病，稳扎稳打。';
+ else if(dec)q='有来有回，'+g+' 场打下来球龄又厚了一截。改掉了 '+fixed+' 个老毛病，稳扎稳打。';
  else q='记了 '+g+' 次、'+hours+' 小时——先把场次堆起来，进步最快。';
- document.getElementById('w-quip').textContent=q;
- show('wrap');
-}
+ document.getElementById('w-quip').textContent=q;show('wrap')}
 let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),3500)}
 async function dl(){if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
- try{const cv=await html2canvas(document.getElementById('card'),{scale:3,backgroundColor:null,useCORS:true,logging:false});
-  const a=document.createElement('a');a.download='网球年度回顾.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
-load();renderHome();
+ try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});const a=document.createElement('a');a.download='网球年度回顾.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
+document.querySelectorAll('#f-res .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#f-res .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');resSel=c.dataset.v});
+renderHome();
 </script>
 </body>
 </html>

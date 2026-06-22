@@ -5,20 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>网球选拍推荐 · 你该买什么拍、穿几磅</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/app.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../assets/profile.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-.cc-rk{font-family:var(--font-display);font-size:34px;line-height:1.05;color:#fff;margin-top:6px}
-.cc-spec{font-family:var(--font-mono);font-size:11.5px;color:var(--on-court-dim);margin-top:8px;letter-spacing:.02em}
-.cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.cc-tags span{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.14);color:var(--on-court)}
-.cc-tags span.ball{background:var(--ball);color:#1a3a12;width:auto;height:auto;border-radius:999px;box-shadow:none}
+.cc-rk{font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1.05;color:#fff;margin-top:6px}
+.cc-spec{font-family:var(--font-mono);font-size:11.5px;color:var(--on-court-dim);margin-top:8px}
+.cc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.cc-tags span{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.14);color:var(--on-court)}
+.cc-tags span.hot{background:var(--ball);color:#1a3a12}
 .alt{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-top:1px solid var(--ink-08)}
-.alt .an{font-family:var(--font-display);font-size:17px;flex:none;width:40%}
-.alt .ad{font-size:12.5px;color:var(--ink-55);line-height:1.45}
-.trap{font-size:12.5px;color:var(--warn);line-height:1.6;padding-left:18px;position:relative;margin-top:7px}
+.alt .an{font-family:var(--font-display);font-weight:700;font-size:16px;flex:none;width:42%}
+.alt .ad{font-size:12px;color:var(--ink-55);line-height:1.45}
+.trap{font-size:12.5px;color:var(--warn);line-height:1.55;padding-left:18px;position:relative;margin-top:7px}
 .trap::before{content:"⚠";position:absolute;left:0;font-size:11px}
+.sect{margin-top:16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-40)}
 </style>
 </head>
 <body>
@@ -29,16 +31,16 @@
     <div class="intro-top">
       <div class="brandline"><span class="logo"></span>选拍推荐 · Racket</div>
       <h1 class="hero">你该买<br>什么<span class="mark">拍</span>？</h1>
-      <p class="sub">别再瞎选或盲目跟风同款。6 个问题，像懂球的朋友帮你挑 2-3 把拍，连穿几磅一起告诉你。</p>
-      <div class="tips">🎾 <b>护手腕优先</b>：手臂有伤/怕伤，会自动帮你避开"震手"的硬框，这是新手最容易踩的坑。</div>
-      <div class="meta-row"><span><b>6</b> 题</span><span><b>30</b> 秒</span><span>含<b>穿线磅数</b></span></div>
+      <p class="sub">别瞎选或盲目跟风同款。几个问题，像懂球的朋友帮你挑 2-3 把，连穿几磅、颜值都帮你想到。</p>
+      <div class="tips">🎾 <b>护手腕优先</b>：手臂有伤会自动避开"震手"硬框（新手最易踩的坑）；填过档案的力量/伤病会自动带入。</div>
+      <div class="meta-row"><span><b>7</b> 题</span><span>含<b>穿线磅数</b></span><span>含<b>颜值</b></span></div>
     </div>
     <button class="btn btn-primary" onclick="start()"><span class="dot"></span>帮我挑拍</button>
     <div class="intro-foot">参数参考 Tennis Warehouse / 品牌官标 · 价格为国内大致参考</div>
   </section>
 
   <section class="view" id="v-quiz">
-    <div class="q-head"><div class="q-count"><b id="qc">01</b> / 6</div><div class="brandline" style="font-size:10px"><span class="logo"></span>Racket</div></div>
+    <div class="q-head"><div class="q-count"><b id="qc">01</b> / 7</div><div class="brandline" style="font-size:10px"><span class="logo"></span>Racket</div></div>
     <div class="bar"><i id="qbar" style="width:0%"></i></div>
     <div class="q-dim" id="qdim">水平</div>
     <h2 class="q-title" id="qt">题目</h2>
@@ -49,24 +51,23 @@
 
   <section class="view" id="v-result">
     <div class="r-head"><div class="brandline"><span class="logo"></span>选拍处方 · 主推</div><h2>给你挑了这把</h2></div>
-    <div class="card-stage"><div class="card grain" id="card">
+    <div class="card-stage"><div class="card" id="card">
       <div class="card-court">
         <div class="cc-eyebrow"><span>选拍处方 · RACKET</span><span>2026</span></div>
-        <div class="cc-rk" id="cc-rk">Wilson Clash 100<span class="ball" style="position:static;display:inline-block;margin-left:6px;vertical-align:middle"></span></div>
-        <div class="cc-spec" id="cc-spec">100 拍面 · 295g · 16×19</div>
+        <div class="cc-rk" id="cc-rk">Wilson Clash 100</div>
+        <div class="cc-spec" id="cc-spec">100 拍面 · 295g · RA55</div>
         <div class="cc-tags" id="cc-tags"></div>
       </div>
       <div class="card-pad">
         <p class="c-quip" id="cc-why">为什么适合你</p>
         <div class="c-rows">
+          <div class="c-row"><div class="k">配色颜值</div><div class="v" id="cc-color">—</div></div>
           <div class="c-row"><div class="k">它的代价</div><div class="v" id="cc-cost">—</div></div>
           <div class="c-row"><div class="k">参考价</div><div class="v" id="cc-price">—</div></div>
           <div class="c-row"><div class="k">穿线建议</div><div class="v" id="cc-string">—</div></div>
         </div>
-        <div style="margin-top:16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40)">备选</div>
-        <div id="cc-alts"></div>
-        <div style="margin-top:16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40);margin-bottom:6px">新手别踩的坑</div>
-        <div id="cc-traps"></div>
+        <div class="sect">备选</div><div id="cc-alts"></div>
+        <div class="sect" style="margin-bottom:6px">新手别踩的坑</div><div id="cc-traps"></div>
         <div class="c-foot"><span class="badge"><span class="ball"></span>选拍推荐</span><span>@你的账号 · 2026</span></div>
       </div>
     </div></div>
@@ -81,36 +82,61 @@
 
 <script>
 const Q=[
- {key:'level',dim:'水平',q:'你现在什么水平？',note:'决定拍面大小、重量、容错。',opts:['新手起步（半年内）','进阶在练（能对拉）','老手 / 高水平']},
+ {key:'level',dim:'水平',q:'你现在什么水平？',note:'决定拍面大小、容错。',opts:['新手起步（半年内）','进阶在练（能对拉）','老手 / 高水平']},
  {key:'style',dim:'打法',q:'你打球什么风格？',note:'决定线床和拍系。',opts:['暴力上旋 · 大力抽','平击快攻 · 抢上升点','底线全面 · 攻守均衡','防守 / 削球 / 单反','双打网前为主','还没定型']},
- {key:'power',dim:'力量',q:'你的力量/体能？',note:'挥一支 300g 的拍打 30 分钟会不会累？',opts:['偏小，会累','中等','大，不怕重']},
- {key:'arm',dim:'手臂',q:'手臂、手腕还好吗？',note:'最重要的一题——决定要不要避开硬框。',opts:['一切正常','偶尔酸 / 怕受伤','有过网球肘 / 手腕伤']},
- {key:'budget',dim:'预算',q:'预算大概多少？',note:'单位：人民币，整框参考价。',opts:['入门（<700）','主流（1000–1800）','不限']},
- {key:'gender',dim:'握把',q:'你的性别？',note:'只用来定默认握把和重量挡，真正决策靠力量那题。',opts:['女','男']},
+ {key:'power',dim:'力量',q:'你的力量 / 体能？',note:'挥一支 300g 拍打 30 分钟会不会累？',opts:['偏小，会累','中等','大，不怕重']},
+ {key:'arm',dim:'手臂',q:'手臂、手腕还好吗？',note:'最重要——决定要不要避开硬框。',opts:['一切正常','偶尔酸 / 怕受伤','有过网球肘 / 手腕伤']},
+ {key:'budget',dim:'预算',q:'预算大概多少？',note:'人民币，整框参考价。',opts:['入门（<700）','主流（1000–1800）','不限']},
+ {key:'gender',dim:'性别',q:'你的性别？',note:'用来定默认握把和重量挡。',opts:['女','男']},
+ {key:'look',dim:'颜值偏好',q:'在意球拍颜值吗？想要什么调性？',note:'选填——只在参数合适的拍里帮你优先好看的，不会为颜值牺牲手感。',opts:['无所谓，参数对就行','出片清新（白/天蓝/薄荷绿）','张扬运动（黄/橙/红）','高级低调（墨绿/哑光黑）','甜系粉色']},
 ];
-// 型号库（参数参考 Tennis Warehouse / 官标；价格国内大致参考）
+// 型号库（25款，参数参考 TW/官标，价国内参考；color主色, look颜值标签, t档位）
 const R={
- ts6:{n:'Head Ti.S6',s:'115 拍面 · 225g · 超轻',p:'约 ¥500–700',c:'极轻好上手，但遇强力球会被顶飞，水平上来要换。',t:['新手','超轻']},
- clash108:{n:'Wilson Clash 108',s:'108 拍面 · 280g · RA≈55',p:'约 ¥1700–2000',c:'容错+护手都顶，但偏软、想要凌厉进攻感会觉得"闷"。',t:['新手','护肘']},
- clash100:{n:'Wilson Clash 100 v3',s:'100 拍面 · 295g · RA≈55',p:'约 ¥1800–2100',c:'护手感标杆，但纯力量型会嫌它不够"弹"。',t:['护肘','全面']},
- clash100L:{n:'Wilson Clash 100L',s:'100 拍面 · 280g · RA≈55',p:'约 ¥1800–2000',c:'轻+护手+灵活，代价是面对重球稳定性略弱。',t:['护肘','轻量','女性友好']},
- ezone:{n:'Yonex EZONE 100',s:'100 拍面 · 300g · 偏软',p:'约 ¥2000–2300',c:'舒适+可控力量，全面但不极端，没有特别突出的"个性"。',t:['全面','护肘倾向']},
- ezone100L:{n:'Yonex EZONE 100L',s:'100 拍面 · 285g · 偏软',p:'约 ¥1900–2100',c:'轻量舒适，力量靠自己补一点。',t:['轻量','女性友好']},
- puredrive:{n:'Babolat Pure Drive',s:'100 拍面 · 300g · 16×19',p:'约 ¥1900–2300',c:'"易出力"标杆、进阶通用，但偏硬、震手，伤肘者别碰。',t:['全面','力量']},
- puredriveLite:{n:'Babolat Pure Drive Lite',s:'100 拍面 · 270g · 16×19',p:'约 ¥1800–2000',c:'轻+有力量，但硬框对手臂不友好，有伤慎选。',t:['轻量','力量']},
- aero:{n:'Babolat Pure Aero',s:'100 拍面 · 300g · 上旋怪',p:'约 ¥2000–2300',c:'上旋火力拉满（Nadal 系），但偏硬震手，明确不护肘。',t:['上旋','力量']},
- vcore:{n:'Yonex VCORE 100',s:'100 拍面 · 300g · 上旋',p:'约 ¥2000–2200',c:'要重上旋又怕伤肘的少数选择，比 Aero 软一点。',t:['上旋','护肘倾向']},
- blade:{n:'Wilson Blade 98 v9',s:'98 拍面 · 305g · 16×19',p:'约 ¥1900–2200',c:'进阶到高手的控制全面拍，新手会嫌它"要自己发力"。',t:['控制','进阶+']},
- protour:{n:'Wilson Pro Tour 95',s:'95 拍面 · 310g · 18×20',p:'约 ¥2000',c:'郑钦文实战拍，密线床极致控制——新手照买会非常难打。',t:['控制','高手向']},
+ ts6:{n:'Head Ti.S6',s:'115拍面 · 225g · 超轻',c:'极轻好上手，但遇强力球会被顶飞，水平上来要换。',p:'约¥500–700',color:'银黑·朴素',look:[],t:['新手']},
+ clash108:{n:'Wilson Clash 108',s:'108拍面 · 280g · RA≈55',c:'容错+护手都顶，但偏软，想要凌厉进攻会觉得闷。',p:'约¥1700–2000',color:'黑+红·低调',look:['护肘'],t:['新手','护肘']},
+ clash100:{n:'Wilson Clash 100 v3',s:'100拍面 · 295g · RA≈55',c:'护手感标杆，纯力量型会嫌它不够弹。',p:'约¥2000–2400',color:'黑+红·低调',look:['护肘'],t:['护肘','全面']},
+ clash100L:{n:'Wilson Clash 100L',s:'100拍面 · 280g · RA≈55',c:'轻+护手+灵活，面对重球稳定性略弱。',p:'约¥1200–1500',color:'黑+红·百搭',look:['女生友好','护肘'],t:['护肘','轻量']},
+ blade:{n:'Wilson Blade 98 v9',s:'98拍面 · 305g · 16×19',c:'控制全面拍，新手会嫌它要自己发力。',p:'约¥2000–2300',color:'翠绿·颜值天花板',look:['颜值天花板','高级','出片'],t:['控制']},
+ ultra100:{n:'Wilson Ultra 100 v4',s:'100拍面 · 318g · 16×19',c:'轻松出力，但偏硬，手臂敏感慎选。',p:'约¥1800–2100',color:'蓝紫渐变·超好看',look:['颜值天花板','出片'],t:['力量']},
+ ultra95qz:{n:'Wilson Ultra 95 QZ（郑钦文可买同款）',s:'95拍面 · 283g · 16×20',c:'95小拍面+283g，新手会觉得难打，适合进阶女生。',p:'约¥1500+',color:'电光蓝·上镜',look:['出片','女生友好','郑钦文'],t:['女生','郑钦文同款']},
+ prostaff97:{n:'Wilson Pro Staff 97 v14（郑钦文代言）',s:'97拍面 · 315g · 16×19',c:'315g 偏重、要自己发力，新手别碰。',p:'约¥1419',color:'古铜→金渐变',look:['高级'],t:['控制']},
+ aero:{n:'Babolat Pure Aero',s:'100拍面 · 300g · 上旋怪',c:'上旋火力拉满(Nadal系)，但偏硬震手，明确不护肘。',p:'约¥1579–1799',color:'荧光黄+黑·招牌',look:['张扬'],t:['上旋','力量']},
+ puredrive:{n:'Babolat Pure Drive',s:'100拍面 · 300g · 16×19',c:'易出力标杆，但偏硬震手，伤肘者别碰。',p:'约¥1800–2000',color:'亮蓝+白·干净',look:['出片'],t:['全面','力量']},
+ puredriveLite:{n:'Babolat Pure Drive Lite',s:'100拍面 · 270g · 16×19',c:'轻+有力量，硬框对手臂不友好。',p:'约¥1800–2000',color:'亮蓝·干净',look:['女生友好'],t:['轻量','力量']},
+ purestrike:{n:'Babolat Pure Strike',s:'98拍面 · 305g · 16×19',c:'控制+旋转+力量均衡，新手偏难。',p:'约¥1600–1900',color:'白+珊瑚红·时尚',look:['出片'],t:['控制']},
+ evoaero:{n:'Babolat EVO Aero Pink',s:'102拍面 · 275g · 软',c:'轻松上旋+容错，进阶后会想换更专业的。',p:'约¥1000',color:'粉色·官方甜系',look:['女生友好','甜系'],t:['新手','上旋']},
+ ezone100:{n:'Yonex EZONE 100',s:'100拍面 · 300g · 偏软',c:'舒适+可控力量，全面但个性不极端。',p:'约¥2200–2600',color:'爆裂蓝·颜值招牌',look:['颜值天花板','出片','女生友好'],t:['全面','护肘倾向']},
+ ezone100L:{n:'Yonex EZONE 100L',s:'100拍面 · 285g · 偏软',c:'轻量舒适，力量要自己补一点。',p:'约¥1500–1800',color:'爆裂蓝·出片',look:['出片','女生友好'],t:['轻量','女生']},
+ ezone100sl:{n:'Yonex EZONE 100SL',s:'100拍面 · 270g · 最轻',c:'最轻好挥，面对快球稳定性弱。',p:'约¥1400–1700',color:'蓝·清爽',look:['女生友好'],t:['轻量','女生']},
+ vcore:{n:'Yonex VCORE 100',s:'100拍面 · 300g · 上旋',c:'要重上旋又怕伤肘的少数选择，比 Aero 软。',p:'约¥1500–1700',color:'探戈红·骚',look:['张扬','颜值天花板'],t:['上旋','护肘倾向']},
+ percept:{n:'Yonex Percept 100',s:'100拍面 · 300g · 16×19',c:'控制+可控力量，要自己发力。',p:'约¥1680–1920',color:'薄荷绿·高级',look:['高级','出片'],t:['控制','全面']},
+ speed:{n:'Head Speed MP',s:'100拍面 · 300g · 16×19',c:'全场均衡(小德/辛纳线)，没有突出个性。',p:'约¥1618',color:'白黑·简洁',look:['高级'],t:['全面']},
+ radical:{n:'Head Radical MP',s:'98拍面 · 300g · 16×19',c:'全场全能"人民的球拍"，98拍面新手略难。',p:'约¥1184–1516',color:'橙+藏青·亮眼',look:['张扬'],t:['全面']},
+ boom:{n:'Head Boom MP',s:'100拍面 · 295g · 16×19',c:'力量+旋转+快挥，HEAD最受女生欢迎线。',p:'约¥1420',color:'薄荷绿/青·出片',look:['出片','女生友好'],t:['全面','护肘倾向']},
+ gravity:{n:'Head Gravity MP',s:'100拍面 · 295g · RA≈59',c:'控制+手感+护胳膊，纯力量型嫌不够弹。',p:'约¥1400',color:'哑光黑+银·高级',look:['高级','护肘'],t:['控制','护肘']},
+ tempo:{n:'Tecnifibre Tempo 285',s:'100拍面 · 285g · 女性专研',c:'力量操控均衡，唯一为女性技术设计，男生选别款。',p:'约¥1200',color:'白+蒂芙尼绿·女神',look:['出片','女生友好','高级'],t:['女生','控制']},
+ sx300:{n:'Dunlop SX 300',s:'100拍面 · 300g · 上旋',c:'旋转打法(对标Aero)，偏硬手臂敏感慎选。',p:'约¥1500–1900',color:'亮黄+青绿·吸睛',look:['张扬'],t:['上旋']},
 };
-const TRAPS_BASE=[
- '别买明星专业拍：郑钦文实战是 Pro Tour 95、费德勒 RF97（340g），都重/硬/难打，新手照买等于练废动作。',
- '别只看"重量"：同 300g 打感可天差地别，关键看挥重——别被一个数字骗了。',
- '别买大握把：宁可小半号加 overgrip，握把太大易致网球肘、也不好转手腕。',
-];
+const POOLS={
+ arm:['clash100','ezone100','gravity','clash100L','boom','percept'],
+ beg:['clash108','boom','evoaero','ts6'],
+ light:['clash100L','ezone100L','ezone100sl','tempo','evoaero','puredriveLite'],
+ power:['aero','vcore','sx300','puredrive'],
+ control:['blade','percept','gravity','prostaff97','purestrike'],
+ all:['puredrive','ezone100','speed','radical','boom','vcore'],
+};
+const LOOKMAP={1:['出片','女生友好','颜值天花板'],2:['张扬'],3:['高级','颜值天花板'],4:['女生友好','甜系']};
 
 let cur=0;const ans=new Array(Q.length).fill(null);
-function start(){cur=0;ans.fill(null);show('quiz');render()}
+function start(){
+ cur=0;ans.fill(null);
+ // 读档案预填力量/手臂
+ try{if(window.Profile){const p=Profile.get();
+  if(p.body){const sm={weak:0,medium:1,strong:2}; if(p.body.strength!=null&&sm[p.body.strength]!=null)ans[2]=sm[p.body.strength];
+   if(p.body.injuries&&p.body.injuries.length)ans[3]=2;}
+  if(p.body&&p.body.gender)ans[5]=p.body.gender==='female'?0:1;}}catch(e){}
+ show('quiz');render();
+}
 function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
 const pad=n=>String(n).padStart(2,'0');
 function render(){const q=Q[cur];
@@ -119,66 +145,63 @@ function render(){const q=Q[cur];
  document.getElementById('qdim').textContent=q.dim;document.getElementById('qt').textContent=q.q;document.getElementById('qn').textContent=q.note;
  document.getElementById('qback').style.display=cur>0?'block':'none';
  const box=document.getElementById('qo');box.innerHTML='';
- q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt'+(ans[cur]===i?' sel':'');
-  b.innerHTML='<span class="ix">'+String.fromCharCode(65+i)+'</span><span class="ox">'+o+'</span>';b.onclick=()=>pick(i);box.appendChild(b)})}
+ q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt'+(ans[cur]===i?' sel':'');b.innerHTML='<span class="ix">'+String.fromCharCode(65+i)+'</span><span class="ox">'+o+'</span>';b.onclick=()=>pick(i);box.appendChild(b)})}
 function pick(i){ans[cur]=i;document.querySelectorAll('#qo .opt').forEach((e,x)=>e.classList.toggle('sel',x===i));
  document.getElementById('qbar').style.width=((cur+1)/Q.length*100)+'%';
- setTimeout(()=>{if(cur<Q.length-1){cur++;render()}else finish()},240)}
+ setTimeout(()=>{if(cur<Q.length-1){cur++;render()}else finish()},230)}
 function prev(){if(cur>0){cur--;render()}}
 
 function recommend(a){
- const level=a.level,style=a.style,power=a.power,arm=a.arm,budget=a.budget,gender=a.gender;
- let pool,note='';
- if(arm>=1){ pool=['clash100','ezone','clash100L']; note='护手优先' }
- else if(level===0){ pool=budget===0?['ts6','clash108']:['clash108','clash100','puredriveLite'] }
- else if(power===0||gender===0){ pool=['clash100L','ezone100L','puredriveLite'] }
- else if(level===2&&(style===1||style===3)){ pool=['blade','protour','ezone'] }
- else if(style===0){ pool=arm>=1?['vcore','ezone']:['aero','vcore','puredrive'] }
- else { pool=['puredrive','ezone','clash100'] }
- if(budget===0){ const cheap=['ts6','clash108']; if(!cheap.includes(pool[0])) pool=['clash108','ts6']; }
- const main=R[pool[0]], alts=pool.slice(1,3).map(k=>R[k]);
- // 穿线建议
+ const{level,style,power,arm,budget,gender,look}=a;
+ let pool;
+ if(arm>=1)pool=POOLS.arm.slice();
+ else if(level===0)pool=budget===0?['ts6','clash108']:POOLS.beg.slice();
+ else if(power===0||gender===0)pool=POOLS.light.slice();
+ else if(level===2&&(style===1||style===3))pool=POOLS.control.slice();
+ else if(style===0)pool=arm>=1?['vcore','ezone100']:POOLS.power.slice();
+ else pool=POOLS.all.slice();
+ if(budget===0){const cheap=pool.filter(k=>/¥5|¥6|¥1000|¥1[0-4]/.test(R[k].p));pool=cheap.length?cheap:['ts6','clash108'];}
+ // 颜值 tie-breaker
+ if(look>0){const want=LOOKMAP[look]||[];pool.sort((x,y)=>(R[y].look.some(l=>want.includes(l))?1:0)-(R[x].look.some(l=>want.includes(l))?1:0));}
+ const main=R[pool[0]],alts=pool.slice(1,3).map(k=>R[k]);
  let st;
- if(arm>=1) st='<b>48–52 磅 + 软线（多丝/天然肠线）</b>，护手腕第一，别拉高磅。';
- else if(level===0) st='<b>48–52 磅 + 多丝软线</b>，省力、弹性好、容易把球打过网。';
- else if(style===0) st='<b>52–55 磅 + 聚酯硬线</b>，扛得住你的暴力上旋，控制好。';
- else st='<b>52–55 磅</b>，进阶通用区间；想要更多控制往上 1-2 磅，想要力量往下。';
- // 标签 + 理由
- const why=buildWhy(a,main);
- const traps=[...TRAPS_BASE];
- if(arm>=1) traps.unshift('怕伤肘千万别贪"好出力"的硬框（如 Pure Drive/Aero）——配软线、别拉高磅同样重要。');
- if(budget===0) traps.push('新手别纠结几百块的旗舰：动作没定型，入门容错大拍足够，打出兴趣再升级。');
- return {main,alts,st,why,traps};
+ if(arm>=1)st='<b>48–52 磅 + 软线（多丝/天然肠线）</b>，护手腕第一，别拉高磅。';
+ else if(level===0)st='<b>48–52 磅 + 多丝软线</b>，省力、弹性好、容易把球打过网。';
+ else if(style===0)st='<b>52–55 磅 + 聚酯硬线</b>，扛得住暴力上旋、控制好。';
+ else st='<b>52–55 磅</b>，进阶通用；想要更多控制往上 1-2 磅，想要力量往下。';
+ const traps=['别买明星专业拍：郑钦文实战是买不到的定制框、费德勒 RF97 重 340g，新手照买等于练废动作。','别只看"重量"：同 300g 打感能天差地别，关键看挥重。','别买大握把：宁可小半号加 overgrip，握把太大易致网球肘。'];
+ if(arm>=1)traps.unshift('怕伤肘千万别贪"好出力"的硬框(Pure Drive/Aero)——配软线、别拉高磅同样重要。');
+ if(look>0)traps.push('颜值是加分项不是关键：别为了好看买太轻(<260g)或拍面太小，先锁参数再挑配色。');
+ return {main,alts,st,traps,why:buildWhy(a,main)};
 }
-function buildWhy(a,m){
- const bits=[];
- if(a.arm>=1) bits.push('你提到手臂怕受伤，所以优先挑了软框、护手的拍');
- if(a.level===0) bits.push('新手阶段靠大甜区和容错把球打稳');
- if(a.power===0) bits.push('力量偏小，给你挑了轻一点、好挥的');
- if(a.style===0) bits.push('暴力上旋需要疏线床咬球');
- if(a.level===2&&(a.style===1||a.style===3)) bits.push('你有控制需求，密一点的线床更精准');
- if(!bits.length) bits.push('综合你的水平和打法，这把全面、好上手、不挑人');
- return bits.join('；')+'。'+m.n.split(' ')[0]+' 这把正中你的需求。';
-}
-function finish(){
- const a={};Q.forEach((q,i)=>a[q.key]=ans[i]??0);
- const r=recommend(a);
- document.getElementById('cc-rk').innerHTML=r.main.n+'<span class="ball" style="position:static;display:inline-block;margin-left:6px;vertical-align:middle"></span>';
+function buildWhy(a,m){const b=[];
+ if(a.arm>=1)b.push('你手臂怕伤，优先挑了软框护手的');
+ if(a.level===0)b.push('新手靠大甜区和容错把球打稳');
+ if(a.power===0)b.push('力量偏小，给你挑轻一点好挥的');
+ if(a.style===0)b.push('暴力上旋需要疏线床咬球');
+ if(a.level===2&&(a.style===1||a.style===3))b.push('你有控制需求，密线床更精准');
+ if(a.look>0)b.push('在参数合适的里挑了你喜欢的配色');
+ if(!b.length)b.push('综合你的水平打法，这把全面好上手、不挑人');
+ return b.join('；')+'。'+m.n.split('（')[0].split(' ').slice(0,2).join(' ')+' 正中你的需求。'}
+function finish(){const a={};Q.forEach((q,i)=>a[q.key]=ans[i]??0);const r=recommend(a);
+ document.getElementById('cc-rk').textContent=r.main.n;
  document.getElementById('cc-spec').textContent=r.main.s;
- document.getElementById('cc-tags').innerHTML=r.main.t.map((t,i)=>'<span'+(i===0?' class="ball"':'')+'>'+t+'</span>').join('');
+ document.getElementById('cc-tags').innerHTML=r.main.t.map((t,i)=>'<span'+(i===0?' class="hot"':'')+'>'+t+'</span>').join('');
  document.getElementById('cc-why').textContent=r.why;
+ document.getElementById('cc-color').textContent=r.main.color;
  document.getElementById('cc-cost').textContent=r.main.c;
  document.getElementById('cc-price').textContent=r.main.p;
  document.getElementById('cc-string').innerHTML=r.st;
- document.getElementById('cc-alts').innerHTML=r.alts.map(x=>'<div class="alt"><div class="an">'+x.n+'</div><div class="ad">'+x.s+'<br>'+x.t.join(' · ')+'</div></div>').join('');
+ document.getElementById('cc-alts').innerHTML=r.alts.map(x=>'<div class="alt"><div class="an">'+x.n.split('（')[0]+'</div><div class="ad">'+x.s+'<br>'+x.color+'</div></div>').join('');
  document.getElementById('cc-traps').innerHTML=r.traps.map(t=>'<div class="trap">'+t+'</div>').join('');
+ // 写档案：在用考虑拍
+ if(window.Profile){try{Profile.patch({gear:{considering:r.main.n}});}catch(e){}}
  show('result');
 }
 function retake(){show('intro')}
-let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4200)}
+let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4000)}
 async function dl(){if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
- try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});
-  const a=document.createElement('a');a.download='选拍方案.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
+ try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});const a=document.createElement('a');a.download='选拍方案.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
 </script>
 </body>
 </html>

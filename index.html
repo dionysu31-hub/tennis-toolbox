@@ -5,55 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>网球工具箱 · 测段位 · AI看挥拍 · 选拍 · 练习 · 打卡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/app.css">
+<script src="./assets/profile.js"></script>
 <style>
-.tools{margin-top:24px;display:flex;flex-direction:column;gap:11px}
-.tool{display:flex;align-items:center;gap:15px;background:var(--paper);border:1px solid var(--ink-08);border-radius:16px;padding:16px 18px;text-decoration:none;color:var(--ink);box-shadow:var(--sh-whisper);transition:transform .16s var(--ease-out),border-color .16s,box-shadow .2s}
-.tool:hover{border-color:var(--ink-20);transform:translateY(-2px);box-shadow:var(--sh-raise)}
+.me{margin-top:18px;border-radius:var(--r-card);overflow:hidden;text-decoration:none;display:block;box-shadow:var(--sh-court)}
+.me .top{background:radial-gradient(120% 140% at 82% -20%,var(--court),var(--court-deep) 74%);padding:16px 18px;display:flex;align-items:center;gap:14px;color:var(--on-court)}
+.me .ring{--p:0;width:48px;height:48px;border-radius:50%;flex:none;background:conic-gradient(var(--ball) calc(var(--p)*1%),rgba(255,255,255,.16) 0);display:grid;place-items:center}
+.me .ring i{width:37px;height:37px;border-radius:50%;background:var(--court-deep);display:grid;place-items:center;font-family:var(--font-num);font-weight:700;font-size:13px;color:#fff;font-style:normal}
+.me .info{flex:1}
+.me .info b{font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff;display:block}
+.me .info span{font-family:var(--font-mono);font-size:11px;color:var(--on-court-dim)}
+.me .ar{color:var(--ball);font-size:16px}
+.tools{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.tool{display:flex;align-items:center;gap:15px;background:var(--paper);border:1px solid var(--ink-08);border-radius:16px;padding:15px 17px;text-decoration:none;color:var(--ink);box-shadow:var(--sh-1);transition:transform .16s var(--ease),border-color .16s,box-shadow .2s}
+.tool:hover{border-color:var(--ink-20);transform:translateY(-2px);box-shadow:var(--sh-2)}
 .tool:active{transform:translateY(0) scale(.99)}
-.tool .em{font-size:24px;width:48px;height:48px;border-radius:13px;background:var(--court);color:#fff;display:grid;place-items:center;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
-.tool .tx{flex:1}
-.tool .tx h3{font-family:var(--font-display);font-size:21px;line-height:1.08}
+.tool .em{font-size:23px;width:46px;height:46px;border-radius:13px;background:var(--court);color:#fff;display:grid;place-items:center;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.tool .tx{flex:1}.tool .tx h3{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.08}
 .tool .tx p{font-size:12.5px;color:var(--ink-55);margin-top:2px}
-.tool .ar{color:var(--ink-40);font-family:var(--font-mono);transition:transform .16s var(--ease-out),color .16s}
-.tool:hover .ar{color:var(--accent);transform:translateX(3px)}
-.tool .tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
-.loop{margin-top:26px;background:var(--court);border-radius:16px;padding:18px 20px;color:var(--on-court);box-shadow:var(--sh-court)}
-.loop .lt{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-court-dim)}
-.loop .lf{font-family:var(--font-display);font-size:20px;line-height:1.35;margin-top:8px}
-.loop .lf b{color:var(--ball);font-style:normal}
-.loop .chain{display:flex;align-items:center;gap:6px;margin-top:13px;font-family:var(--font-mono);font-size:11px;color:var(--on-court);flex-wrap:wrap}
-.loop .chain span{background:rgba(255,255,255,.12);padding:4px 9px;border-radius:999px}
-.loop .chain i{color:var(--ball);font-style:normal}
-.copyfoot{margin-top:24px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-40);text-align:center}
+.tool .ar{color:var(--ink-40);font-family:var(--font-mono);transition:transform .16s var(--ease),color .16s}.tool:hover .ar{color:var(--accent);transform:translateX(3px)}
+.tool .tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.loop{margin-top:24px;background:var(--court);border-radius:16px;padding:17px 19px;color:var(--on-court);box-shadow:var(--sh-court)}
+.loop .lt{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-court-dim)}
+.loop .lf{font-family:var(--font-display);font-weight:700;font-size:19px;line-height:1.35;margin-top:7px}
+.loop .lf b{color:var(--ball)}
+.loop .chain{display:flex;align-items:center;gap:6px;margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--on-court);flex-wrap:wrap}
+.loop .chain span{background:rgba(255,255,255,.12);padding:4px 9px;border-radius:999px}.loop .chain i{color:var(--ball);font-style:normal}
+.copyfoot{margin-top:22px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-40);text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="brandline"><span class="logo"></span>网球工具箱 · Tennis Kit</div>
   <h1 class="hero">打网球的，<br>都该有的<span class="mark">私教本</span>。</h1>
-  <p class="sub">从"我什么水平"到"动作差在哪、该练什么"——5 个工具，认真帮你打好球，不只是出片。</p>
+  <p class="sub">从"我什么水平"到"动作差在哪、该练什么、买什么拍"——6 个工具，认真帮你打好球，数据互通、越用越懂你。</p>
+
+  <a class="me" id="me-card" href="./profile/index.html">
+    <div class="top"><div class="ring" id="me-ring"><i id="me-ntrp">+</i></div>
+      <div class="info"><b id="me-title">建立我的网球档案</b><span id="me-sub">30 秒，之后所有工具按你的情况来</span></div>
+      <div class="ar">→</div></div>
+  </a>
 
   <div class="tools">
-    <a class="tool" href="./level/index.html">
-      <div class="em">🎾</div><div class="tx"><h3>段位测评<span class="tag">防高估</span></h3><p>25 题测真实 NTRP，七维雷达，宁可保守不灌水</p></div><div class="ar">→</div></a>
-    <a class="tool" href="./swing/index.html">
-      <div class="em">🤖</div><div class="tx"><h3>AI 挥拍诊断<span class="tag">招牌</span></h3><p>传段视频，AI 在真实画面上标骨架、力线、挑毛病</p></div><div class="ar">→</div></a>
-    <a class="tool" href="./string/index.html">
-      <div class="em">🏸</div><div class="tx"><h3>选拍推荐</h3><p>6 题帮你挑 2-3 把拍 + 穿几磅，护手腕优先</p></div><div class="ar">→</div></a>
-    <a class="tool" href="./practice/index.html">
-      <div class="em">📚</div><div class="tx"><h3>练习指导</h3><p>按你的水平和短板，给一周该练什么的清单</p></div><div class="ar">→</div></a>
-    <a class="tool" href="./log/index.html">
-      <div class="em">📓</div><div class="tx"><h3>打卡与笔记</h3><p>记打球、记毛病、追踪进步，年底出回顾</p></div><div class="ar">→</div></a>
+    <a class="tool" href="./level/index.html"><div class="em">🎾</div><div class="tx"><h3>段位测评<span class="tag">防高估</span></h3><p>分流+情景化选项算真实 NTRP，七维雷达</p></div><div class="ar">→</div></a>
+    <a class="tool" href="./swing/index.html"><div class="em">🤖</div><div class="tx"><h3>AI 挥拍诊断<span class="tag">招牌</span></h3><p>真实画面叠骨架力线，挑毛病+你最像哪个球星</p></div><div class="ar">→</div></a>
+    <a class="tool" href="./string/index.html"><div class="em">🏸</div><div class="tx"><h3>选拍推荐</h3><p>25 款库帮你挑拍+穿几磅，护手腕、看颜值</p></div><div class="ar">→</div></a>
+    <a class="tool" href="./practice/index.html"><div class="em">📚</div><div class="tx"><h3>练习指导</h3><p>按你的短板，给一周该练什么的清单</p></div><div class="ar">→</div></a>
+    <a class="tool" href="./log/index.html"><div class="em">📓</div><div class="tx"><h3>打卡与笔记</h3><p>记打球、追踪问题、年底出回顾</p></div><div class="ar">→</div></a>
   </div>
 
   <div class="loop">
     <div class="lt">为什么凑成一套</div>
-    <div class="lf">先知道你<b>什么水平</b>，再帮你<b>约到对的人</b>。</div>
-    <div class="chain"><span>测段位</span><i>→</i><span>诊断挑毛病</span><i>→</i><span>照着练</span><i>→</i><span>打卡追踪</span><i>↺</i></div>
+    <div class="lf">测出水平 → 诊断挑毛病 → 照着练 → 打卡追踪，<b>数据全互通</b>。</div>
+    <div class="chain"><span>测段位</span><i>→</i><span>诊断</span><i>→</i><span>练习</span><i>→</i><span>打卡</span><i>↺</i></div>
   </div>
   <div class="copyfoot">网球工具箱 · 2026 · 用完记得把卡发出来 🎾</div>
 </div>
+<script>
+(function(){if(!window.Profile)return;const p=Profile.get();
+ const ntrp=p.background&&(p.background.ntrpTested||p.background.ntrpSelf);
+ if(p._onboarded||ntrp){
+  const open=(p.issues||[]).filter(i=>i.status!=='resolved').length;
+  document.getElementById('me-ntrp').textContent=ntrp?ntrp.toFixed(1):'·';
+  document.getElementById('me-title').textContent='我的网球档案';
+  document.getElementById('me-sub').textContent=(ntrp?('NTRP '+ntrp.toFixed(1)):'未测段位')+(open?(' · '+open+' 个待改问题'):'');
+  document.getElementById('me-ring').style.setProperty('--p',Math.round((p._completeness||0)*100));
+ }})();
+</script>
 </body>
 </html>

@@ -5,15 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>网球练习指导 · 该练什么、怎么练</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/app.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../assets/profile.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-.cc-focus{font-family:var(--font-display);font-size:38px;line-height:1.05;color:#fff;margin-top:8px}
-.drill-h{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40);margin:16px 0 8px}
+.cc-focus{font-family:var(--font-display);font-weight:800;font-size:36px;line-height:1.05;color:#fff;margin-top:8px}
+.drill-h{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-40);margin:16px 0 8px}
 .drill{display:flex;gap:11px;padding:10px 0;border-top:1px solid var(--ink-08);font-size:13.5px;color:var(--ink-70);line-height:1.5}
 .drill .tag{flex:none;font-size:15px;margin-top:1px}
 .gate{margin-top:14px;background:var(--court-soft);border:1px solid var(--court-line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--court-deep);line-height:1.5}
+.frm{background:var(--court-soft);border:1px solid var(--court-line);border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--court-deep);margin-bottom:16px;display:none}
 </style>
 </head>
 <body>
@@ -25,7 +27,8 @@
       <div class="brandline"><span class="logo"></span>练习指导 · Practice</div>
       <h1 class="hero">今天<br>该练<span class="mark">什么</span>？</h1>
       <p class="sub">很多人打球没计划，只会瞎打。告诉我你的水平和短板，给你一份这周该练什么的清单。</p>
-      <div class="field" style="margin-top:24px"><label>我的水平</label><div class="chips" id="c-level">
+      <div class="frm" id="from-profile"></div>
+      <div class="field" style="margin-top:8px"><label>我的水平</label><div class="chips" id="c-level">
         <button class="chip sel" data-v="0">纯新手</button><button class="chip" data-v="1">初级（能慢打）</button><button class="chip" data-v="2">进阶（能对拉）</button><button class="chip" data-v="3">中高级</button></div></div>
       <div class="field"><label>每周能打几次</label><div class="chips" id="c-freq">
         <button class="chip sel" data-v="0">1 次</button><button class="chip" data-v="1">2–3 次</button><button class="chip" data-v="2">几乎每天</button></div></div>
@@ -38,7 +41,7 @@
 
   <section class="view" id="v-result">
     <div class="r-head"><div class="brandline"><span class="logo"></span>训练计划 · 本周</div><h2>你的训练清单</h2></div>
-    <div class="card-stage"><div class="card grain" id="card">
+    <div class="card-stage"><div class="card" id="card">
       <div class="card-court">
         <div class="cc-eyebrow"><span>训练计划 · PRACTICE</span><span id="cc-meta">进阶 · 每周2-3次</span></div>
         <div class="cc-eyebrow" style="margin-top:14px;color:var(--on-court-dim)">本周聚焦</div>
@@ -51,18 +54,16 @@
           <div class="c-row"><div class="k">关键要领</div><div class="v" id="cc-key">—</div></div>
           <div class="c-row"><div class="k">常见错误</div><div class="v" id="cc-err">—</div></div>
         </div>
-        <div class="drill-h">练法 · 一个人也能练 🧍</div>
-        <div id="cc-solo"></div>
-        <div class="drill-h">练法 · 有球友/教练 👥</div>
-        <div id="cc-duo"></div>
+        <div class="drill-h">练法 · 一个人也能练 🧍</div><div id="cc-solo"></div>
+        <div class="drill-h">练法 · 有球友/教练 👥</div><div id="cc-duo"></div>
         <div class="c-row" style="margin-top:16px;border-top:1px solid var(--ink-08);padding-top:14px"><div class="k">今天只盯</div><div class="v" id="cc-one" style="color:var(--accent);font-weight:600">—</div></div>
         <div class="c-foot"><span class="badge"><span class="ball"></span>练习指导</span><span>@你的账号 · 2026</span></div>
       </div>
     </div></div>
     <div class="actions">
       <button class="btn btn-primary" onclick="dl()"><span class="dot"></span>保存训练计划</button>
-      <button class="btn btn-ghost" onclick="show('form')">改一改</button>
-      <div class="hint">练完去「打卡笔记」记一笔，追踪有没有改善 👀</div>
+      <div class="btn-row"><button class="btn btn-court" onclick="go('../log/index.html')">练完去打卡</button><button class="btn btn-ghost" onclick="show('form')">改一改</button></div>
+      <div class="hint">练完去「打卡」记一笔，追踪有没有改善 👀</div>
     </div>
   </section>
 </div>
@@ -71,46 +72,20 @@
 <script>
 const NAMES={fore:'正手',back:'反手',serve:'发球',net:'截击 / 网前',return:'接发球',move:'步法移动'};
 const DRILLS={
- fore:{key:'早转体、击球点在身前约腰高、由低到高"刷"过球、放松出速度（像甩鞭子不是推）',
-  err:'只用手臂不转体；击球点偏后/太晚；想"往前推"而不是"向上刷"',
-  solo:['对墙连续正手 50 下，逼自己不停调整脚步','对镜影子挥拍，慢放查"转体→击球点在前→雨刷收尾" 15 次/组','自抛球刷上旋，找"刷过球顶"的手感'],
-  duo:['喂球打在上升点，逼你向上刷','固定线路多球练落点深度，90 秒一组'],
-  one:'每拍都先转肩、把球迎在身前'},
- back:{key:'先转髋再挥拍、击球点在身前、手腕别太紧给球一点弧度；多数反手错误其实在脚步',
-  err:'不转身正面拉拍；手腕太紧打出死球短球；见反手就绕去打正手',
-  solo:['离墙约 0.6 米对墙练反手（缩短引拍→拍柄指网→送出）','影子挥拍空间走动作 15 次/组'],
-  duo:['底线稳定多球（固定喂反手，练过网弧度+深度）','变线 drill：3 拍对角→第 4 拍变直线'],
-  one:'看到反手来，先整个人转侧再挥'},
- serve:{key:'抛球是头号工程（同一位置、同一高度）；Trophy 位屈膝；力量靠腿→髋→肩→臂传递；内旋(pronation)才是拍头加速来源',
-  err:'抛球不稳；只用手臂较劲；不屈膝不"挠背"；端盘子式拍面没内旋',
-  solo:['专练抛球：抛到地上目标点、不移脚能接回手里，做几十次','不拿拍练"扔球"动作找鞭打','影子发球对镜查 Trophy 位与收尾'],
-  duo:['打靶发球：deuce/ad 两边各对 T点/中路/外角发 6 个','二发专练：目标全进对角区'],
-  one:'先把抛球练稳，其它都跟着稳'},
- net:{key:'大陆式握拍（正反不换手）、分腿垫步带前冲、"推挡不抡"（接球+推）、击球点很靠前、拍头高于手腕',
-  err:'抡截击（最普遍）；握拍错切换不了；触球太晚；往下"砍"球导致冒高',
-  solo:['墙上截击：正手 30 下、反手 30 下不落地','近距离反应截击，正反各 35 下'],
-  duo:['基础喂球 10 个一组，分配正手/反手/身体球','脚下低球喂球，瞄鞋带高度逼你屈膝'],
-  one:'默念"接球+推"，引拍别超过后肩'},
- return:{key:'Ready→Read→React；极短引拍（用单元转体起手，meet not hit）；击球点在身前；一发=挡、二发=攻',
-  err:'引拍太大（头号）；不做/做错分腿垫步；想一拍打死；盯发球员不盯球',
-  solo:['影子接发，正反各 20–30 次','对墙接发：自己对墙发→弹回当接发短挥打回'],
-  duo:['迎球三段：只挡→稳定送进对方区→回深过发球线','一发练"挡"、二发练"踏进+最高点抢攻"'],
-  one:'引拍越短越好，像用网兜接球'},
- move:{key:'"分腿→移动→击球→回位"自动化；单元转体越早越好；调整步用小碎步；永远站前脚掌',
-  err:'平脚死站、不分腿垫步（永远慢一步）；打完站着欣赏不回中；步子太少用"够球"代替调整',
-  solo:['跳绳 3 组 × 30–60 秒','线上分腿跳 2–3 组 × 30 秒','蜘蛛跑：场上 5 球逐个捡回中框，可计时刷 PB'],
-  duo:['分腿+抛接：搭档在你离地瞬间抛球，先手接再拍击','左右大角度喂球，每球必回中点再接下一球'],
-  one:'每拍打完，立刻回中点'},
-};
+ fore:{key:'早转体、击球点在身前约腰高、由低到高"刷"过球、放松出速度（像甩鞭子不是推）',err:'只用手臂不转体；击球点偏后/太晚；想"往前推"而不是"向上刷"',solo:['对墙连续正手 50 下，逼自己不停调整脚步','对镜影子挥拍，慢放查"转体→击球点在前→雨刷收尾" 15 次/组','自抛球刷上旋，找"刷过球顶"的手感'],duo:['喂球打在上升点，逼你向上刷','固定线路多球练落点深度，90 秒一组'],one:'每拍都先转肩、把球迎在身前'},
+ back:{key:'先转髋再挥拍、击球点在身前、手腕别太紧给球一点弧度；多数反手错误其实在脚步',err:'不转身正面拉拍；手腕太紧打出死球短球；见反手就绕去打正手',solo:['离墙约 0.6 米对墙练反手（缩短引拍→拍柄指网→送出）','影子挥拍空间走动作 15 次/组'],duo:['底线稳定多球（固定喂反手，练过网弧度+深度）','变线 drill：3 拍对角→第 4 拍变直线'],one:'看到反手来，先整个人转侧再挥'},
+ serve:{key:'抛球是头号工程（同一位置、同一高度）；Trophy 位屈膝；力量靠腿→髋→肩→臂传递；内旋(pronation)才是拍头加速来源',err:'抛球不稳；只用手臂较劲；不屈膝不"挠背"；端盘子式拍面没内旋',solo:['专练抛球：抛到地上目标点、不移脚能接回手里，做几十次','不拿拍练"扔球"动作找鞭打','影子发球对镜查 Trophy 位与收尾'],duo:['打靶发球：deuce/ad 两边各对 T点/中路/外角发 6 个','二发专练：目标全进对角区'],one:'先把抛球练稳，其它都跟着稳'},
+ net:{key:'大陆式握拍（正反不换手）、分腿垫步带前冲、"推挡不抡"（接球+推）、击球点很靠前、拍头高于手腕',err:'抡截击（最普遍）；握拍错切换不了；触球太晚；往下"砍"球导致冒高',solo:['墙上截击：正手 30 下、反手 30 下不落地','近距离反应截击，正反各 35 下'],duo:['基础喂球 10 个一组，分配正手/反手/身体球','脚下低球喂球，瞄鞋带高度逼你屈膝'],one:'默念"接球+推"，引拍别超过后肩'},
+ return:{key:'Ready→Read→React；极短引拍（用单元转体起手，meet not hit）；击球点在身前；一发=挡、二发=攻',err:'引拍太大（头号）；不做/做错分腿垫步；想一拍打死；盯发球员不盯球',solo:['影子接发，正反各 20–30 次','对墙接发：自己对墙发→弹回当接发短挥打回'],duo:['迎球三段：只挡→稳定送进对方区→回深过发球线','一发练"挡"、二发练"踏进+最高点抢攻"'],one:'引拍越短越好，像用网兜接球'},
+ move:{key:'"分腿→移动→击球→回位"自动化；单元转体越早越好；调整步用小碎步；永远站前脚掌',err:'平脚死站、不分腿垫步（永远慢一步）；打完站着欣赏不回中；步子太少用"够球"代替调整',solo:['跳绳 3 组 × 30–60 秒','线上分腿跳 2–3 组 × 30 秒','蜘蛛跑：场上 5 球逐个捡回中框，可计时刷 PB'],duo:['分腿+抛接：搭档在你离地瞬间抛球，先手接再拍击','左右大角度喂球，每球必回中点再接下一球'],one:'每拍打完，立刻回中点'}};
 const LV=['纯新手','初级','进阶','中高级'];
-function planText(freq,weakName){
- if(freq===0) return '每次 1.5 小时这样排：20min 迷你网球热身 → 40min 专项（重点死磕'+weakName+'）→ 15min 发球 → 25min 打分。记住：一次只改一件事。';
- if(freq===1) return '拆成三种日轮着来：① 技术日（慢节奏 + 大量'+weakName+'的喂球/影子）② 多球体系日（高强度固定线路 + 步法）③ 比赛日（打分抢七，检验前两天）。每次都塞一段发球。';
- return '周期化 + 防伤：一周 ≈ 2 天技术多球 + 2 天打分 + 1–2 天体能步法 + 1 天全休。每周至少留 1 个完全休息日，别天天对抗。';
-}
+function planText(freq,wn){
+ if(freq===0)return '每次 1.5 小时这样排：20min 迷你网球热身 → 40min 专项（重点死磕'+wn+'）→ 15min 发球 → 25min 打分。一次只改一件事。';
+ if(freq===1)return '拆成三种日轮着来：① 技术日（慢节奏 + 大量'+wn+'的喂球/影子）② 多球体系日（高强度固定线路 + 步法）③ 比赛日（打分抢七，检验前两天）。每次都塞一段发球。';
+ return '周期化 + 防伤：一周 ≈ 2 天技术多球 + 2 天打分 + 1–2 天体能步法 + 1 天全休。每周至少留 1 个完全休息日。';}
 let sel={level:'0',freq:'0',weak:'fore'};
-['level','freq','weak'].forEach(g=>{document.querySelectorAll('#c-'+g+' .chip').forEach(c=>c.onclick=()=>{
- document.querySelectorAll('#c-'+g+' .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel[g]=c.dataset.v})});
+function bind(){['level','freq','weak'].forEach(g=>{document.querySelectorAll('#c-'+g+' .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#c-'+g+' .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel[g]=c.dataset.v})})}
+function setChip(g,v){document.querySelectorAll('#c-'+g+' .chip').forEach(c=>c.classList.toggle('sel',c.dataset.v===String(v)));sel[g]=String(v)}
 function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
 function gen(){
  const level=+sel.level,freq=+sel.freq,weak=sel.weak,d=DRILLS[weak],wn=NAMES[weak];
@@ -118,20 +93,30 @@ function gen(){
  document.getElementById('cc-focus').textContent=wn;
  document.getElementById('cc-plan').textContent=planText(freq,wn);
  const gate=document.getElementById('cc-gate');
- if(level===0&&(weak==='serve'||weak==='return')){gate.style.display='block';gate.innerHTML='🌱 新手提示：先把'+wn+'的"过网/进框"练稳，<b>别急着碰上旋和发力</b>——先稳定，再谈旋转和力量。'}
+ if(level===0&&(weak==='serve'||weak==='return')){gate.style.display='block';gate.innerHTML='🌱 新手提示：先把'+wn+'的"过网/进框"练稳，<b>别急着碰上旋和发力</b>——先稳定，再谈旋转。'}
  else if(level===0){gate.style.display='block';gate.innerHTML='🌱 新手提示：先从短场（发球区内）软手对拉建立球感，<b>别一上来站底线猛抽</b>。'}
  else gate.style.display='none';
- document.getElementById('cc-key').textContent=d.key;
- document.getElementById('cc-err').textContent=d.err;
+ document.getElementById('cc-key').textContent=d.key;document.getElementById('cc-err').textContent=d.err;
  document.getElementById('cc-solo').innerHTML=d.solo.map(x=>'<div class="drill"><span class="tag">🧍</span><span>'+x+'</span></div>').join('');
  document.getElementById('cc-duo').innerHTML=d.duo.map(x=>'<div class="drill"><span class="tag">👥</span><span>'+x+'</span></div>').join('');
  document.getElementById('cc-one').textContent=d.one;
  show('result');
 }
-let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),4000)}
+function go(u){location.href=u}
+let tt;function toast(h){const e=document.getElementById('toast');e.innerHTML=h;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),3800)}
 async function dl(){if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(e){}}
- try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});
-  const a=document.createElement('a');a.download='训练计划.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
+ try{const cv=await html2canvas(document.getElementById('card'),{scale:2,backgroundColor:null,useCORS:true,logging:false});const a=document.createElement('a');a.download='训练计划.png';a.href=cv.toDataURL('image/png');a.click();toast('已保存 ✅')}catch(e){toast('保存失败，截图也行 😅')}}
+// 读档案预选水平/短板
+(function(){bind();
+ if(!window.Profile)return;const p=Profile.get();let note=[];
+ const ntrp=p.background&&(p.background.ntrpTested||p.background.ntrpSelf);
+ if(ntrp){const lv=ntrp<2.3?0:ntrp<2.8?1:ntrp<3.8?2:3;setChip('level',lv);note.push('水平 NTRP '+ntrp.toFixed(1))}
+ const open=(p.issues||[]).filter(i=>i.status!=='resolved');
+ const map={'正手':'fore','反手':'back','发球':'serve','截击':'net','截击 / 网前':'net','接发':'return','接发球':'return','移动':'move','步法移动':'move','挥拍':'fore'};
+ const hit=open.map(i=>map[i.area]).find(Boolean);
+ if(hit){setChip('weak',hit);note.push('短板「'+NAMES[hit]+'」')}
+ if(note.length){const el=document.getElementById('from-profile');el.style.display='block';el.innerHTML='📁 已按你的档案预选：'+note.join(' · ')+'（可改）'}
+})();
 </script>
 </body>
 </html>
