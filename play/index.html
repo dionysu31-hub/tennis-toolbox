@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>约球 · 深圳网球 · 按段位找搭子</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/profile.js"></script>
+<style>
+.wrap{padding-bottom:74px}
+/* 顶部城市条 */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.city{font-family:var(--font-display);font-weight:800;font-size:21px;display:flex;align-items:center;gap:5px}
+.city .dd{font-size:12px;color:var(--ink-40)}
+.myseg{display:flex;align-items:center;gap:7px;background:var(--court);color:#fff;padding:6px 12px;border-radius:999px;font-family:var(--font-mono);font-size:12px;box-shadow:var(--sh-1)}
+.myseg b{font-family:var(--font-num);font-weight:800;font-size:14px}
+.myseg .bluedot{width:7px;height:7px;border-radius:50%;background:var(--ball)}
+/* 筛选 */
+.filt{display:flex;gap:7px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px}
+.filt::-webkit-scrollbar{display:none}
+.filt .chip{flex:none;padding:8px 14px;font-size:13px}
+/* 约局卡 */
+.mc{background:var(--paper);border:1px solid var(--ink-08);border-radius:var(--r-card);padding:15px 16px;margin-bottom:12px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .15s var(--ease),box-shadow .2s}
+.mc:active{transform:scale(.99)}
+.mc-top{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.mc-type{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--court);color:#fff;font-weight:600}
+.mc-type.fix{background:var(--accent)}
+.mc-seg{font-family:var(--font-mono);font-size:11px;color:var(--ink-55);background:var(--ink-04);padding:3px 9px;border-radius:999px}
+.mc-status{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--ok)}
+.mc-status.hot{color:var(--accent)}
+.mc-venue{font-family:var(--font-display);font-weight:700;font-size:19px;line-height:1.1}
+.mc-meta{font-size:12.5px;color:var(--ink-55);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.mc-players{display:flex;align-items:center;gap:6px;margin-top:12px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--court);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none;border:2px solid var(--paper);margin-left:-8px;box-shadow:0 0 0 1px var(--ink-08)}
+.av:first-child{margin-left:0}
+.av.empty{background:var(--bone-2);color:var(--ink-40);border-style:dashed}
+.mc-pcount{font-size:12px;color:var(--ink-55);margin-left:6px}
+.mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:12px;border-top:1px solid var(--ink-08)}
+.mc-fee{font-family:var(--font-num);font-weight:700;font-size:17px}
+.mc-fee small{font-family:var(--font-ui);font-size:11px;color:var(--ink-40);font-weight:400}
+.mc-join{background:var(--ink);color:var(--paper);border:none;font-family:var(--font-ui);font-weight:600;font-size:13.5px;padding:9px 18px;border-radius:10px;cursor:pointer}
+/* 段位榜 */
+.rk-tabs{display:flex;gap:7px;margin-bottom:14px}
+.rr{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;margin-bottom:8px;box-shadow:var(--sh-1)}
+.rr.me{border-color:var(--accent);background:var(--accent-soft)}
+.rr .no{font-family:var(--font-num);font-weight:800;font-size:18px;width:26px;text-align:center;color:var(--ink-40)}
+.rr .no.top{color:var(--accent)}
+.rr .nm{flex:1;font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px}
+.rr .wl{font-family:var(--font-mono);font-size:11px;color:var(--ink-55)}
+.rr .sc{font-family:var(--font-num);font-weight:800;font-size:19px;display:flex;align-items:center;gap:4px}
+.bluedot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
+.graydot{width:7px;height:7px;border-radius:50%;background:var(--ink-20);display:inline-block}
+/* 我的 */
+.me-rows{display:flex;gap:10px;margin-top:14px}
+.me-stat{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;text-align:center}
+.me-stat .n{font-family:var(--font-num);font-weight:800;font-size:24px;color:#fff}
+.me-stat .l{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;color:var(--on-court-dim);margin-top:4px}
+.sect{margin:22px 0 10px;font-family:var(--font-display);font-weight:700;font-size:18px}
+/* 发起 */
+.tip-court{background:var(--court-soft);border:1px solid var(--court-line);border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--court-deep);line-height:1.55;margin-bottom:16px}
+/* 局详情 */
+.dt-hero{background:radial-gradient(120% 140% at 82% -20%,var(--court),var(--court-deep) 74%);color:var(--on-court);border-radius:var(--r-card-lg);padding:20px 22px;box-shadow:var(--sh-court);margin-bottom:16px}
+.dt-hero .t{font-family:var(--font-display);font-weight:800;font-size:24px;color:#fff}
+.dt-hero .m{font-size:13px;color:var(--on-court-dim);margin-top:6px;line-height:1.6}
+.dt-p{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--ink-08)}
+.dt-p .nm{flex:1;font-weight:600;font-size:14.5px}
+.dt-p .sg{font-family:var(--font-num);font-weight:700;font-size:14px;color:var(--court)}
+.split{background:var(--paper);border:1px solid var(--ink-08);border-radius:14px;padding:14px 16px;margin:16px 0;box-shadow:var(--sh-1)}
+.split .row{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0}
+.split .row.tot{border-top:1px dashed var(--ink-12);margin-top:6px;padding-top:10px;font-weight:700}
+.guard{font-size:12px;color:var(--ink-55);line-height:1.6;background:var(--ok-soft);border-radius:10px;padding:11px 13px;margin-top:6px}
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:460px;height:64px;background:var(--paper);border-top:1px solid var(--ink-08);display:flex;z-index:50;box-shadow:0 -4px 16px rgba(40,30,18,.06)}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--ink-40);font-size:10.5px;font-family:var(--font-ui)}
+.tb .ic{font-size:19px;line-height:1}
+.tb.on{color:var(--accent)}
+.tb.mid .ic{width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--ball);display:grid;place-items:center;font-size:24px;margin-top:-18px;box-shadow:var(--sh-2);font-weight:700}
+.tb.mid.on .ic{background:var(--accent);color:#fff}
+.backbtn{background:none;border:none;font-family:var(--font-mono);font-size:13px;color:var(--ink-40);cursor:pointer;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ========== 约局列表 ========== -->
+  <section class="view on" id="v-home">
+    <div class="topbar">
+      <div class="city">深圳 <span class="dd">▾</span></div>
+      <div class="myseg"><span class="bluedot"></span>我的段位 <b id="my-seg">3.0</b></div>
+    </div>
+    <h1 class="hero" style="font-size:32px;margin-bottom:14px">附近<span class="mark">约球</span>局</h1>
+    <div class="filt" id="filt"></div>
+    <div id="match-list"></div>
+  </section>
+
+  <!-- ========== 段位榜 ========== -->
+  <section class="view" id="v-rank">
+    <div class="topbar"><div class="city">段位榜</div><div class="myseg"><span class="bluedot"></span>深圳 · 网球</div></div>
+    <div class="rk-tabs" id="rk-tabs"></div>
+    <div class="tip-court" style="background:var(--accent-soft);border-color:var(--accent-line);color:var(--ink-70)">🏆 段位榜只认<b>平台实战</b>——微信约的球不计分、爬不了榜。每月 ladder 前 8 进季后赛。</div>
+    <div id="rank-list"></div>
+  </section>
+
+  <!-- ========== 发起约局 ========== -->
+  <section class="view" id="v-create">
+    <div class="topbar"><div class="city">发起约局</div></div>
+    <div class="tip-court">💡 <b>发起不立即锁场</b>：先放出来招人，凑齐人数才确认占场、自动按人头 AA。凑不满全额退、不占你钱。</div>
+    <div class="field"><label>局型</label><div class="chips" id="cr-type">
+      <button class="chip sel">双打拼场</button><button class="chip">双打固定局</button><button class="chip">单打约对手</button><button class="chip">新手友好</button></div></div>
+    <div class="field"><label>球场</label><input type="text" value="香蜜体育中心 · 福田" readonly></div>
+    <div class="field-row"><div class="field"><label>日期</label><input type="text" value="周三 12/24"></div><div class="field"><label>时间</label><input type="text" value="20:00–22:00"></div></div>
+    <div class="field"><label>段位区间（按你 3.0 推荐）</label><div class="chips" id="cr-seg">
+      <button class="chip">2.5–3.0</button><button class="chip sel">3.0–3.5</button><button class="chip">3.5–4.0</button></div></div>
+    <div class="field-row"><div class="field"><label>人数</label><input type="text" value="4 人（双打）"></div><div class="field"><label>场费/人</label><input type="text" value="¥45"></div></div>
+    <div class="actions"><button class="btn btn-primary"><span class="dot"></span>发起约局（付 ¥45 占我的位）</button></div>
+    <div class="hint">你作为发起人先占 1 位；满 4 人自动锁场，凑不满退款。</div>
+  </section>
+
+  <!-- ========== 我的段位 ========== -->
+  <section class="view" id="v-me">
+    <div class="topbar"><div class="city">我的</div></div>
+    <div class="court-panel">
+      <div class="cc-eyebrow"><span>网球段位 · 深圳</span><span id="me-rankno">深圳第 42 名</span></div>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+        <div class="av" style="width:54px;height:54px;font-size:20px;margin:0">你</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:#fff">网球玩家</div>
+        <div class="cc-tag">右手 · 双反 · 福田/南山活跃</div></div>
+        <div style="margin-left:auto;text-align:right"><div style="font-family:var(--font-num);font-weight:800;font-size:40px;color:#fff;line-height:1" id="me-seg2">3.0</div><div class="cc-tag" style="color:var(--ball)">● 已验证</div></div>
+      </div>
+      <div class="me-rows">
+        <div class="me-stat"><div class="n">20</div><div class="l">已打场次</div></div>
+        <div class="me-stat"><div class="n">12-8</div><div class="l">胜-负</div></div>
+        <div class="me-stat"><div class="n">95%</div><div class="l">履约率</div></div>
+      </div>
+    </div>
+    <div class="sect">我报名的局</div>
+    <div id="my-matches"></div>
+    <div class="sect">提升球技 · 测了才有段位分</div>
+    <div class="btn-row" style="margin-bottom:12px"><button class="btn btn-court" onclick="location.href='../level/index.html'">测段位</button><button class="btn btn-court" onclick="location.href='../swing/index.html'">AI诊断挥拍</button><button class="btn btn-ghost" onclick="location.href='../index.html'">全部工具</button></div>
+    <div class="sect">段位怎么涨</div>
+    <div class="tip-court">每次约球<b>录真实比分</b> → 赢的局超预期就涨分（哪怕这场输）。打够场次+对手够多 → 灰勾变蓝勾（已验证）。<b>段位分来自你的 AI 挥拍诊断起步，靠实战长肉。</b></div>
+  </section>
+
+  <!-- ========== 局详情 ========== -->
+  <section class="view" id="v-detail">
+    <button class="backbtn" onclick="show('home')">← 返回约局</button>
+    <div class="dt-hero">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--on-court-dim);text-transform:uppercase" id="dt-type">双打拼场 · 3.0–3.5</div>
+      <div class="t" id="dt-venue">香蜜体育中心</div>
+      <div class="m" id="dt-meta">福田 · 距你 3.2km<br>周三 12/24 · 20:00–22:00</div>
+    </div>
+    <div class="sect" style="margin-top:0">参与者 <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-40)" id="dt-pcount">3/4 · 缺 1 人</span></div>
+    <div id="dt-players"></div>
+    <div class="split">
+      <div class="row"><span>场地费（2h）</span><span>¥180</span></div>
+      <div class="row"><span>球 + 用品</span><span>¥0</span></div>
+      <div class="row tot"><span>每人 AA（4 人均分）</span><span>¥45</span></div>
+    </div>
+    <div class="actions" style="margin-top:0">
+      <button class="btn btn-primary"><span class="dot"></span>付 ¥45 占位报名</button>
+      <button class="btn btn-ghost">先加候补（满了顶上）</button>
+    </div>
+    <div class="guard">🛡 <b>付费占位防鸽</b>：到场后场费原路退/抵扣；爽约扣信用分 + 该份场费由你承担。本局发起人履约率 98%，靠谱。</div>
+  </section>
+
+</div>
+
+<!-- 底部导航 -->
+<div class="tabbar">
+  <div class="tb on" data-v="home" onclick="tab('home')"><span class="ic">🎾</span>约球</div>
+  <div class="tb" data-v="rank" onclick="tab('rank')"><span class="ic">🏆</span>段位榜</div>
+  <div class="tb mid" data-v="create" onclick="tab('create')"><span class="ic">＋</span></div>
+  <div class="tb" data-v="me" onclick="tab('me')"><span class="ic">👤</span>我的</div>
+</div>
+
+<script>
+// 我的段位（优先读档案，否则 3.0）
+let mySeg='3.0';
+try{if(window.Profile){const p=Profile.get();const n=p.background&&(p.background.ntrpTested||p.background.ntrpSelf);if(n)mySeg=n.toFixed(1);}}catch(e){}
+document.getElementById('my-seg').textContent=mySeg;
+document.getElementById('me-seg2').textContent=mySeg;
+
+const FILTERS=['全部','双打拼场','双打固定局','单打','新手友好','月度ladder'];
+const MATCHES=[
+ {type:'双打拼场',fix:0,seg:'3.0–3.5',venue:'香蜜体育中心',area:'福田',dist:'3.2km',time:'周三 12/24 · 20:00',have:3,need:4,fee:45,status:'招募中',hot:0,avs:['哲','婷','K']},
+ {type:'双打固定局',fix:1,seg:'3.0–4.0',venue:'深圳湾体育中心',area:'南山',dist:'5.1km',time:'每周六 · 09:00',have:2,need:4,fee:60,status:'每周局·2空位',hot:0,avs:['Co','雄']},
+ {type:'月度ladder',fix:0,seg:'3.0–3.5',venue:'深圳湾体育中心',area:'南山',dist:'5.1km',time:'周日 12/28 · 14:00',have:6,need:8,fee:50,status:'计段位分',hot:0,avs:['哲','K','Co','婷','M','雄']},
+ {type:'单打约对手',fix:0,seg:'3.0–3.5',venue:'南山网球中心',area:'南山',dist:'6.8km',time:'周四 12/25 · 19:00',have:1,need:2,fee:90,status:'招募中',hot:0,avs:['Le']},
+ {type:'双打拼场',fix:0,seg:'3.5–4.0',venue:'科技园全民健身',area:'南山',dist:'4.0km',time:'周二 12/23 · 21:00',have:3,need:4,fee:40,status:'即将满',hot:1,avs:['K','J','Ti']},
+ {type:'新手友好',fix:0,seg:'2.0–2.8',venue:'莲花体育中心',area:'福田',dist:'2.1km',time:'周日 12/28 · 10:00',have:5,need:6,fee:30,status:'即将满',hot:1,avs:['新','M','卡','D','妮']},
+];
+const RANKS={
+ 深圳:[['老K',4.0,'31-9',1],['阿哲',3.6,'24-12',1],['Jason',3.5,'19-10',1],['Tina',3.4,'22-15',1],['Coco',3.2,'15-9',1],['大雄',3.1,'12-11',0],['你',3.0,'12-8',1,1],['Mia',2.9,'8-7',0],['卡卡',2.6,'5-6',0]],
+ 南山:[['老K',4.0,'31-9',1],['Jason',3.5,'19-10',1],['Coco',3.2,'15-9',1],['你',3.0,'12-8',1,1],['Leo',2.8,'6-8',0]],
+ 福田:[['阿哲',3.6,'24-12',1],['Tina',3.4,'22-15',1],['你',3.0,'12-8',1,1],['大雄',3.1,'12-11',0],['妮妮',2.4,'3-5',0]],
+};
+const MYM=[{type:'双打拼场',venue:'香蜜体育中心',time:'周三 12/24 · 20:00',status:'已报名 · 待成局(3/4)'}];
+
+function renderFilters(){const el=document.getElementById('filt');el.innerHTML=FILTERS.map((f,i)=>'<button class="chip'+(i===0?' sel':'')+'" onclick="filtClick(this)">'+f+'</button>').join('')}
+function filtClick(b){document.querySelectorAll('#filt .chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel')}
+function renderMatches(){
+ document.getElementById('match-list').innerHTML=MATCHES.map((m,i)=>{
+  const avs=m.avs.map(a=>'<div class="av">'+a+'</div>').join('')+(m.have<m.need?'<div class="av empty">+</div>':'');
+  return '<div class="mc" onclick="openDetail('+i+')"><div class="mc-top"><span class="mc-type'+(m.fix?' fix':'')+'">'+m.type+'</span><span class="mc-seg">'+m.seg+'</span><span class="mc-status'+(m.hot?' hot':'')+'">'+m.status+'</span></div>'
+   +'<div class="mc-venue">'+m.venue+'</div><div class="mc-meta"><span>📍 '+m.area+' · '+m.dist+'</span><span>📅 '+m.time+'</span></div>'
+   +'<div class="mc-players">'+avs+'<span class="mc-pcount">'+m.have+'/'+m.need+'人'+(m.have<m.need?'，缺'+(m.need-m.have):'')+'</span></div>'
+   +'<div class="mc-foot"><div class="mc-fee">¥'+m.fee+'<small> /人·AA</small></div><button class="mc-join" onclick="event.stopPropagation();openDetail('+i+')">报名</button></div></div>'
+ }).join('');
+}
+let rkTab='深圳';
+function renderRank(){
+ document.getElementById('rk-tabs').innerHTML=['深圳','南山','福田'].map(t=>'<button class="chip'+(t===rkTab?' sel':'')+'" onclick="rkClick(\''+t+'\')">'+t+'</button>').join('');
+ document.getElementById('rank-list').innerHTML=RANKS[rkTab].map((r,i)=>{const[nm,sc,wl,blue,me]=r;
+  return '<div class="rr'+(me?' me':'')+'"><div class="no'+(i<3?' top':'')+'">'+(i+1)+'</div><div class="av" style="margin:0">'+nm[0]+'</div><div class="nm">'+nm+(me?' (你)':'')+' <span class="'+(blue?'bluedot':'graydot')+'"></span></div><div class="wl">'+wl+'</div><div class="sc">'+sc.toFixed(1)+'</div></div>'}).join('');
+}
+function rkClick(t){rkTab=t;renderRank()}
+function renderMy(){document.getElementById('my-matches').innerHTML=MYM.map(m=>'<div class="mc" style="cursor:default"><div class="mc-top"><span class="mc-type">'+m.type+'</span><span class="mc-status">'+m.status+'</span></div><div class="mc-venue" style="font-size:17px">'+m.venue+'</div><div class="mc-meta"><span>📅 '+m.time+'</span></div></div>').join('')}
+function openDetail(i){const m=MATCHES[i];
+ document.getElementById('dt-type').textContent=m.type+' · '+m.seg;
+ document.getElementById('dt-venue').textContent=m.venue;
+ document.getElementById('dt-meta').innerHTML=m.area+' · 距你 '+m.dist+'<br>'+m.time+'–'+(m.type.indexOf('单打')<0?'22:00':'21:00');
+ document.getElementById('dt-pcount').textContent=m.have+'/'+m.need+' · 缺 '+(m.need-m.have)+' 人';
+ const names={'哲':'阿哲 3.5','婷':'Tina 3.4','K':'老K 4.0','Co':'Coco 3.2','雄':'大雄 3.1','Le':'Leo 2.8','J':'Jason 3.5','Ti':'Tina 3.4','M':'Mia 2.9','新':'新手小白 2.2','卡':'卡卡 2.6','D':'Dan 2.5','妮':'妮妮 2.4'};
+ document.getElementById('dt-players').innerHTML=m.avs.map(a=>{const nm=(names[a]||a+' 3.0');return '<div class="dt-p"><div class="av" style="margin:0">'+a+'</div><div class="nm">'+nm.split(' ')[0]+'</div><div class="sg">'+nm.split(' ')[1]+'</div></div>'}).join('')+'<div class="dt-p"><div class="av empty" style="margin:0">+</div><div class="nm" style="color:var(--ink-40)">虚位以待 · 你来？</div></div>';
+ show('detail');
+}
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');window.scrollTo(0,0)}
+function tab(v){show(v);document.querySelectorAll('.tb').forEach(t=>t.classList.toggle('on',t.dataset.v===v))}
+// chips toggle (create)
+function bindChips(){document.querySelectorAll('#cr-type, #cr-seg').forEach(g=>g.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{g.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel')}))}
+renderFilters();renderMatches();renderRank();renderMy();bindChips();
+</script>
+</body>
+</html>
